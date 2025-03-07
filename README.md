@@ -1,8 +1,9 @@
-# 📝 TscanSDK
+# 📝 Сканер тестов
 
 <div align="center">
 
-![TscanSDK Logo](assets/logo.png)
+![image](https://github.com/user-attachments/assets/f6701c19-31a4-40c9-849a-707fd62ba488)
+
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
 [![OpenCV](https://img.shields.io/badge/OpenCV-4.8.0-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)](https://opencv.org)
@@ -115,18 +116,34 @@ graph TD
 - Обработка ошибок и исключений
 - Сохранение результатов
 
-## 🌟 Демонстрация
+## 🌟 Скриншоты интерфейса
+
+### Главное меню
+![image](https://github.com/user-attachments/assets/16221866-1ed4-4343-94dc-c2762d9b5488)
 
 <div align="center">
 
 ### Сканирование в реальном времени
-![Real-time Scanning](assets/realtime-demo.gif)
+![image](https://github.com/user-attachments/assets/d8d636ce-e6c3-46ff-b4c6-a43eef648a07)
+
 
 ### Пакетная обработка
-![Batch Processing](assets/batch-demo.gif)
+![image](https://github.com/user-attachments/assets/79d8ee3b-c6f0-4f90-be2c-f346cce06185)
+
 
 ### Аналитика и отчеты
-![Analytics](assets/analytics-demo.gif)
+![image](https://github.com/user-attachments/assets/ac3e511d-751a-402d-9a79-febc3a56f8a3)
+![image](https://github.com/user-attachments/assets/8e20d3e1-8b11-4eac-b4fd-c7a31ca938ca)
+![image](https://github.com/user-attachments/assets/1c1b5407-cbb7-4b42-8cfd-17658c9256ba)
+
+### Инструкции
+![image](https://github.com/user-attachments/assets/7fdf9a7d-3634-4354-8732-81edd0423d40)
+
+### Мобильная версия интерфейса
+![image](https://github.com/user-attachments/assets/d02caef8-dd9c-4761-93c5-eead1ebbcaa7)
+![image](https://github.com/user-attachments/assets/3bb7b585-83d2-4543-be0b-62fc2690ddf1)
+![image](https://github.com/user-attachments/assets/41f0100e-cbf6-41a6-845a-30cefacb41c5)
+
 
 </div>
 
@@ -244,38 +261,12 @@ python app.py
 
 </div>
 
-## Возможности
-
-- Сканирование тестов в реальном времени через веб-камеру
-- Пакетная обработка сканированных тестов
-- Формирование отчётов и статистики
-- Настраиваемые критерии оценивания
-- Удобный веб-интерфейс
-
-## Технологии
-
-- Python 3.x
-- Flask
-- OpenCV
-- Socket.IO
-- HTML5/CSS3
-- JavaScript
-
 ## Ресурсы
 
 - [Специальный шрифт для бланков](https://github.com/mrKamanov/TscanSDK/blob/master/assets/OMRBubbles.ttf)
 - [Образец бланка для тестов](https://github.com/mrKamanov/TscanSDK/blob/master/assets/Образец%20бланка.docx)
 - [Репозиторий проекта](https://github.com/mrKamanov/TscanSDK)
 
-## Принцип работы
-
-Система использует компьютерное зрение для распознавания и анализа заполненных тестовых форм. Алгоритм включает:
-
-1. Обнаружение области с ответами
-2. Сегментация ответов
-3. Анализ заполненных областей
-4. Сравнение с правильными ответами
-5. Формирование результатов
 
 ## Лицензия
 
