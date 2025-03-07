@@ -1,0 +1,152 @@
+/* static/css/main.css */
+.menu-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 24px;
+}
+
+.main-title {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 48px;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.main-title i {
+    color: var(--secondary-color);
+    filter: drop-shadow(0 0 10px rgba(136, 192, 208, 0.3));
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 24px;
+}
+
+.menu-card {
+    background: linear-gradient(135deg, 
+        rgba(46, 52, 64, 0.95),
+        rgba(59, 66, 82, 0.95));
+    border-radius: var(--border-radius);
+    padding: 24px;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: all var(--transition-speed) ease;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.menu-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+    border-color: var(--secondary-color);
+}
+
+.menu-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg,
+        transparent,
+        rgba(136, 192, 208, 0.1),
+        transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+}
+
+.menu-card:hover::before {
+    transform: translateX(100%);
+}
+
+.card-icon {
+    font-size: 2.5em;
+    color: var(--secondary-color);
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.menu-card h2 {
+    font-size: 1.5em;
+    margin-bottom: 16px;
+    color: var(--text-color);
+}
+
+.menu-card p {
+    color: rgba(236, 239, 244, 0.8);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.card-footer {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+.card-action i {
+    transition: transform var(--transition-speed) ease;
+}
+
+.menu-card:hover .card-action i {
+    transform: translateX(4px);
+}
+
+/* Медиа-запросы */
+@media screen and (max-width: 768px) {
+    .menu-container {
+        padding: 24px 16px;
+    }
+
+    .main-title {
+        font-size: 2em;
+        margin-bottom: 32px;
+    }
+
+    .cards-grid {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+}
+
+/* Анимация появления */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.menu-card {
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.menu-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.menu-card:nth-child(3) {
+    animation-delay: 0.2s;
+} 

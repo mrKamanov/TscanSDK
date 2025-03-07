@@ -1,0 +1,247 @@
+/* Контейнер видео */
+.video-container {
+    background-color: var(--surface-color);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    margin-bottom: 24px;
+    position: relative;
+    transition: transform var(--transition-speed) ease;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.video-container:hover {
+    transform: translateY(-4px);
+}
+
+.video-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: calc(var(--border-radius) - 4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.video-container p {
+    margin-top: 10px;
+}
+
+.video-overlay {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.video-overlay .checkbox-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    grid-template-rows: repeat(auto-fill, minmax(40px, 1fr));
+    pointer-events: none;
+}
+
+.video-overlay .checkbox-grid label {
+    pointer-events: auto;
+    font-size: 14px;
+    position: absolute;
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    line-height: 1; /* Установите значение по умолчанию */
+}
+
+.video-overlay .checkbox-grid input[type="radio"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.video-overlay .checkbox-grid .custom-checkbox {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+    transition: all var(--transition-speed) ease;
+    box-shadow: 0 0 15px rgba(94, 129, 172, 0.2);
+}
+
+.video-overlay .checkbox-grid input[type="radio"]:checked ~ .custom-checkbox {
+    background-color: var(--primary-color);
+    box-shadow: 0 0 20px rgba(94, 129, 172, 0.4);
+    border-color: var(--secondary-color);
+}
+
+#result {
+    font-size: 1.2em;
+    font-weight: 500;
+    margin-bottom: 16px;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#result i {
+    color: var(--secondary-color);
+}
+
+.video-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.video-header h2 {
+    margin: 0;
+    font-size: 1.4em;
+    font-weight: 600;
+    color: var(--text-color);
+    text-transform: capitalize;
+}
+
+.video-controls {
+    background-color: var(--surface-color);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.video-controls h2 {
+    margin: 0 0 16px 0;
+    font-size: 1.4em;
+    font-weight: 600;
+    color: var(--text-color);
+    text-transform: capitalize;
+}
+
+.control-group {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.control-group button {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--text-color);
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--border-radius);
+    font-size: 20px;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.control-group button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.control-group button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.control-group button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: skewX(-45deg);
+    transition: left 0.5s ease;
+}
+
+.control-group button:hover::before {
+    left: 100%;
+}
+
+.control-group button.paused {
+    background: linear-gradient(135deg, var(--success-color), #9ABD7E);
+}
+
+.control-group button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Добавляем подсказки при наведении */
+.control-group button::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.control-group button:hover::after {
+    opacity: 1;
+    visibility: visible;
+    bottom: -30px;
+}
+
+@media screen and (max-width: 768px) {
+    .video-controls {
+        position: sticky;
+        bottom: 16px;
+        z-index: 2;
+        backdrop-filter: blur(10px);
+        margin: 0 -16px -16px -16px;
+        border-radius: 0 0 var(--border-radius) var(--border-radius);
+    }
+
+    .control-group {
+        justify-content: space-around;
+    }
+
+    .control-group button {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .control-group button::after {
+        display: none; /* Скрываем подсказки на мобильных устройствах */
+    }
+
+    .video-controls h2 {
+        font-size: 1.2em;
+        text-align: center;
+    }
+}

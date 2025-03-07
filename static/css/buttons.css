@@ -1,0 +1,324 @@
+/* static/css/buttons.css */
+/* Базовый класс для всех кнопок */
+.btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 12px 24px !important;
+    border-radius: var(--border-radius) !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    border: none !important;
+    color: var(--text-color-inverse) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn i {
+    font-size: 18px;
+}
+
+.btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Градиентные варианты */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark)) !important;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-color-dark), var(--primary-color));
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success-color), var(--success-color-dark)) !important;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, var(--success-color-dark), var(--success-color));
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--error-color), var(--error-color-dark)) !important;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, var(--error-color-dark), var(--error-color));
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-color-dark)) !important;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, var(--secondary-color-dark), var(--secondary-color));
+}
+
+.btn-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Специфичные кнопки */
+#toggle-sidebar {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    padding: 12px 16px;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#toggle-sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: skewX(-45deg);
+    transition: left 0.5s ease;
+}
+
+#toggle-sidebar:hover::before {
+    left: 100%;
+}
+
+/* Кнопки с базовыми стилями */
+.start-camera-button,
+.stop-camera-button,
+.secondary-button,
+.apply-settings-button,
+.reports-button,
+.capture-frame-button,
+.settings-gear-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    color: var(--text-color-inverse);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    justify-content: center;
+}
+
+.start-camera-button {
+    background: linear-gradient(135deg, #A3BE8C, #8CA27A) !important;
+    color: var(--text-color-inverse) !important;
+}
+
+.stop-camera-button {
+    background: linear-gradient(135deg, #BF616A, #A34F57) !important;
+    color: var(--text-color-inverse) !important;
+}
+
+.secondary-button,
+.capture-frame-button,
+.settings-gear-button {
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-color-dark));
+}
+
+.apply-settings-button {
+    background: linear-gradient(135deg, var(--success-color), var(--success-color-dark));
+}
+
+.reports-button {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-color-dark));
+    text-decoration: none;
+    margin-bottom: 10px;
+}
+
+/* Эффекты при наведении */
+.start-camera-button:hover,
+.stop-camera-button:hover,
+.secondary-button:hover,
+.apply-settings-button:hover,
+.reports-button:hover,
+.capture-frame-button:hover,
+.settings-gear-button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Активное состояние */
+.start-camera-button:active,
+.stop-camera-button:active,
+.secondary-button:active,
+.apply-settings-button:active,
+.reports-button:active,
+.capture-frame-button:active,
+.settings-gear-button:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Группы кнопок */
+.button-group {
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-radius: var(--border-radius) !important;
+    padding: 16px !important;
+    margin-bottom: 24px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+}
+
+.button-group .btn,
+.button-group a {
+    width: 100% !important;
+    justify-content: center !important;
+    margin: 0 !important;
+}
+
+/* Контрольная группа */
+.control-group {
+    display: flex !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    padding: 16px !important;
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-radius: var(--border-radius) !important;
+}
+
+.control-group .btn {
+    flex: 0 1 auto !important;
+}
+
+#toggle-sidebar .fas {
+    margin-right: 8px;
+    font-size: 20px;
+}
+
+/* Анимация для кнопки добавить в отчёт */
+.capture-frame-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: skewX(-45deg);
+    transition: left 0.5s ease;
+}
+
+.capture-frame-button:hover::before {
+    left: 100%;
+}
+
+.scan-button {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--text-color);
+    border: none;
+    padding: 12px 24px;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.scan-button:hover {
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.scan-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.scan-button i {
+    font-size: 18px;
+}
+
+/* Специальные стили для кнопок в навигации */
+.nav-link {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background: var(--hover-color);
+    color: var(--primary-color);
+}
+
+.nav-link.active {
+    background: var(--primary-color);
+    color: var(--text-color-inverse);
+}
+
+/* Стили для кнопок в сайдбаре */
+.sidebar-btn {
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+}
+
+/* Стили для кнопок в модальных окнах */
+.modal-btn {
+    margin: 5px;
+    min-width: 100px;
+}
+
+/* Стили для кнопок загрузки файлов */
+.upload-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-btn input[type="file"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    opacity: 0;
+    outline: none;
+    cursor: inherit;
+    display: block;
+}

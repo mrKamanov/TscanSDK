@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Главное меню сканера тестов">
+    <meta name="theme-color" content="#2E3440">
+    <title>Сканер тестов - Главное меню</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 24px;
+        }
+
+        .menu-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer {
+            width: fit-content;
+            padding: 16px 32px;
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            margin: 20px auto;
+            border-radius: var(--border-radius);
+        }
+
+        .school-name {
+            font-size: 1.1em;
+            color: var(--text-color);
+        }
+
+        .contact-info {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .email-link, .github-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .email-link:hover, .github-link:hover {
+            color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .github-link i {
+            font-size: 24px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .main-content {
+                padding: 24px 16px;
+            }
+
+            .footer {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+                padding: 16px;
+                width: fit-content;
+                margin: 16px auto;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .email-link {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <main class="main-content">
+            <div class="menu-container">
+                <h1 class="main-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    Сканер тестов
+                </h1>
+                <div class="cards-grid">
+                    <a href="/scan" class="menu-card">
+                        <div class="card-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h2>Сканирование в реальном времени</h2>
+                        <p>Проверка тестов через камеру устройства с мгновенным результатом</p>
+                        <div class="card-footer">
+                            <span class="card-action">Открыть <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+
+                    <a href="/batch" class="menu-card">
+                        <div class="card-icon">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <h2>Пакетная обработка</h2>
+                        <p>Загрузка и обработка нескольких тестов одновременно</p>
+                        <div class="card-footer">
+                            <span class="card-action">Открыть <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+
+                    <a href="/reports" class="menu-card">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h2>Отчеты</h2>
+                        <p>Просмотр и анализ результатов тестирования</p>
+                        <div class="card-footer">
+                            <span class="card-action">Открыть <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+
+                    <a href="/instructions" class="menu-card">
+                        <div class="card-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h2>Инструкция</h2>
+                        <p>Подробное руководство по использованию системы</p>
+                        <div class="card-footer">
+                            <span class="card-action">Открыть <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="school-name">МБОУ СОШ №14</div>
+            <div class="contact-info">
+                <a href="mailto:mr.kamanov@yandex.ru" class="email-link">
+                    <i class="fas fa-envelope"></i>
+                    mr.kamanov@yandex.ru
+                </a>
+                <a href="#" class="github-link">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html> 

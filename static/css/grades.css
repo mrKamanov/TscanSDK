@@ -1,0 +1,45 @@
+.percent-complete {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.percent-complete.low {
+    color: red;
+}
+
+.percent-complete.medium {
+    color: orange;
+}
+
+.percent-complete.high {
+    color: green;
+}
+
+.grade {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 8px;
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.grade-5 {
+    background-color: #A3BE8C;
+    color: white;
+}
+
+.grade-4 {
+    background-color: #EBCB8B;
+    color: black;
+}
+
+.grade-3 {
+    background-color: #D08770;
+    color: white;
+}
+
+.grade-2 {
+    background-color: #BF616A;
+    color: white;
+}

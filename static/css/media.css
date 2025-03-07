@@ -1,0 +1,43 @@
+/* static/css/media.css */
+@media screen and (max-width: 768px) {
+    .sidebar.open-sidebar {
+        width: 100%;
+    }
+
+    .main-content.open-sidebar {
+        margin-left: 0;
+        opacity: 0.3;
+    }
+
+    .video-container {
+        margin: 0;
+        padding: 16px;
+    }
+
+    #toggle-sidebar {
+        top: 8px;
+        left: 8px;
+    }
+
+    .capture-frame-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .control-group {
+        flex-direction: column;
+    }
+
+    .control-group button {
+        width: 100%;
+    }
+
+    .video-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .video-header h2 {
+        margin-bottom: 12px;
+    }
+}
