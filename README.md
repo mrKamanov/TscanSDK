@@ -1,8 +1,8 @@
-# 📝 Test Vision AI
+# 📝 TscanSDK
 
 <div align="center">
 
-![Test Vision AI Logo](assets/logo.png)
+![TscanSDK Logo](assets/logo.png)
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
 [![OpenCV](https://img.shields.io/badge/OpenCV-4.8.0-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)](https://opencv.org)
@@ -142,8 +142,8 @@ graph TD
 
 1. **Клонируйте репозиторий**
 ```bash
-git clone https://github.com/mrKamanov/TestVisionAI.git
-cd TestVisionAI
+git clone https://github.com/mrKamanov/TscanSDK.git
+cd TscanSDK
 ```
 
 2. **Создайте виртуальное окружение**
@@ -227,8 +227,6 @@ python app.py
 
 ## 👥 Команда
 
-- 👨‍💻 **Разработка**: [Ваше имя]
-- 🎨 **Дизайн**: [Имя дизайнера]
 - 📧 **Контакты**: mr.kamanov@yandex.ru
 
 ## 🏫 Организация
@@ -241,7 +239,48 @@ python app.py
 
 ### Сделано с ❤️ для образования
 
-[![Следить](https://img.shields.io/github/followers/yourusername?label=Follow&style=social)](https://github.com/yourusername)
-[![Звезды](https://img.shields.io/github/stars/yourusername/test-vision-ai?style=social)](https://github.com/yourusername/test-vision-ai)
+[![Следить](https://img.shields.io/github/followers/mrKamanov?label=Follow&style=social)](https://github.com/mrKamanov)
+[![Звезды](https://img.shields.io/github/stars/mrKamanov/TscanSDK?style=social)](https://github.com/mrKamanov/TscanSDK)
 
-</div> 
+</div>
+
+## Возможности
+
+- Сканирование тестов в реальном времени через веб-камеру
+- Пакетная обработка сканированных тестов
+- Формирование отчётов и статистики
+- Настраиваемые критерии оценивания
+- Удобный веб-интерфейс
+
+## Технологии
+
+- Python 3.x
+- Flask
+- OpenCV
+- Socket.IO
+- HTML5/CSS3
+- JavaScript
+
+## Ресурсы
+
+- [Специальный шрифт для бланков](https://github.com/mrKamanov/TscanSDK/blob/master/assets/OMRBubbles.ttf)
+- [Образец бланка для тестов](https://github.com/mrKamanov/TscanSDK/blob/master/assets/Образец%20бланка.docx)
+- [Репозиторий проекта](https://github.com/mrKamanov/TscanSDK)
+
+## Принцип работы
+
+Система использует компьютерное зрение для распознавания и анализа заполненных тестовых форм. Алгоритм включает:
+
+1. Обнаружение области с ответами
+2. Сегментация ответов
+3. Анализ заполненных областей
+4. Сравнение с правильными ответами
+5. Формирование результатов
+
+## Лицензия
+
+MIT
+
+## Автор
+
+[mrKamanov](https://github.com/mrKamanov) 
