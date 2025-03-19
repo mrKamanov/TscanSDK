@@ -741,6 +741,29 @@
                 text-align: left;
             }
         }
+
+        .form-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        .form-field-label {
+            min-width: 100px;
+            color: #000;
+            font-weight: 500;
+        }
+        .form-field-input {
+            flex: 1;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 4px;
+            padding: 0 10px;
+        }
     </style>
 </head>
 <body>
@@ -765,6 +788,10 @@
         <a href="/instructions" class="nav-link active">
             <i class="fas fa-book"></i>
             <span>Инструкция</span>
+        </a>
+        <a href="/constructor" class="nav-link">
+            <i class="fas fa-edit"></i>
+            <span>Конструктор</span>
         </a>
     </nav>
 
@@ -969,6 +996,169 @@
                     </div>
                 </div>
 
+                <div class="instruction-section" id="constructor">
+                    <h2><i class="fas fa-edit"></i> Конструктор тестов</h2>
+                    
+                    <div class="info-box">
+                        <div class="info-box-title">
+                            <i class="fas fa-info-circle"></i>
+                            <span>О конструкторе тестов</span>
+                        </div>
+                        <div class="info-box-content">
+                            Конструктор тестов позволяет создавать собственные бланки OMR с настраиваемым количеством вопросов и вариантов ответов. Вы можете настроить внешний вид бланка и сохранить его в формате PDF или изображения.
+                        </div>
+                    </div>
+
+                    <div class="step-by-step">
+                        <div class="step">
+                            <h3><i class="fas fa-ruler"></i> 1. Настройка размеров и количества</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-list-ol"></i>
+                                        <span>Количество вопросов</span>
+                                    </div>
+                                    <p>От 1 до 35 вопросов</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-check-square"></i>
+                                        <span>Варианты ответов</span>
+                                    </div>
+                                    <p>От 1 до 10 вариантов</p>
+                                </div>
+                            </div>
+                            <div class="tip-box">
+                                <strong><i class="fas fa-lightbulb"></i> Совет</strong>
+                                <p>Рекомендуемое количество вопросов: 5-20. При большем количестве вопросов может потребоваться уменьшение масштаба для корректного отображения на листе.</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-font"></i> 2. Настройка текстовых элементов</h3>
+                            <ul>
+                                <li>Заголовок листа - название теста или работы</li>
+                                <li>Описание - краткая инструкция или дополнительная информация</li>
+                                <li>Поля для заполнения:
+                                    <ul>
+                                        <li>ФИО учащегося</li>
+                                        <li>Дата проведения</li>
+                                        <li>Предмет</li>
+                                        <li>Инструкция по заполнению</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-sliders-h"></i> 3. Стилизация бланка</h3>
+                            <div class="controls-grid">
+                                <div class="control-item">
+                                    <h4><i class="fas fa-border-style"></i> Толщина рамки</h4>
+                                    <p>Настройка толщины рамки вокруг области ответов (1-10px)</p>
+                                </div>
+                                <div class="control-item">
+                                    <h4><i class="fas fa-search-plus"></i> Масштаб</h4>
+                                    <p>Изменение размера области ответов (50-200%)</p>
+                                </div>
+                                <div class="control-item">
+                                    <h4><i class="fas fa-text-height"></i> Размер шрифта</h4>
+                                    <p>Настройка размера текста (10-30px)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-eye"></i> 4. Управление видимостью элементов</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-check-square"></i>
+                                        <span>Заголовок листа</span>
+                                    </div>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-check-square"></i>
+                                        <span>Описание</span>
+                                    </div>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-check-square"></i>
+                                        <span>ФИО</span>
+                                    </div>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-check-square"></i>
+                                        <span>Дата</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tip-box">
+                                <strong><i class="fas fa-info-circle"></i> Важно</strong>
+                                <p>Вы можете скрыть любые элементы бланка, которые не требуются для вашего теста. Все изменения отображаются в режиме реального времени.</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-mouse-pointer"></i> 5. Интерактивные возможности</h3>
+                            <ul>
+                                <li>Перетаскивание элементов:
+                                    <ul>
+                                        <li>Используйте иконку <i class="fas fa-grip-vertical"></i> для перемещения блоков</li>
+                                        <li>Доступно для заголовка, информации об ученике и области ответов</li>
+                                    </ul>
+                                </li>
+                                <li>Масштабирование области ответов:
+                                    <ul>
+                                        <li>Используйте колесико мыши для изменения масштаба</li>
+                                        <li>Перетаскивайте область ответов для изменения положения</li>
+                                    </ul>
+                                </li>
+                                <li>Скрытие кружков:
+                                    <ul>
+                                        <li>Кликните на кружок, чтобы скрыть его</li>
+                                        <li>Удобно для создания тестов с разным количеством вариантов ответов</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-save"></i> 6. Сохранение бланка</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example success">
+                                        <i class="fas fa-file-pdf"></i>
+                                        <span>Сохранить PDF</span>
+                                    </div>
+                                    <p>Для печати и распространения</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example secondary">
+                                        <i class="fas fa-file-image"></i>
+                                        <span>Сохранить изображение</span>
+                                    </div>
+                                    <p>Для цифрового использования</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <strong><i class="fas fa-star"></i> Рекомендации по использованию</strong>
+                        <ul class="feature-list">
+                            <li>Для корректной работы с конструктором рекомендуется использовать версию для ПК</li>
+                            <li>Создавайте разные варианты одного теста, меняя порядок вопросов</li>
+                            <li>Используйте чёткие и понятные инструкции для учащихся</li>
+                            <li>Проверяйте правильность отображения всех элементов перед печатью</li>
+                            <li>Сохраняйте копии бланков в обоих форматах (PDF и изображение)</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <div class="instruction-section" id="reports">
                     <h2><i class="fas fa-chart-bar"></i> Работа с отчётами</h2>
 
@@ -1092,6 +1282,22 @@
                     <div class="template-example">
                         <h3>Пример бланка ответов:</h3>
                         <div class="answer-sheet-example">
+                            <div class="form-field">
+                                <span class="form-field-label">ФИО:</span>
+                                <div class="form-field-input"></div>
+                            </div>
+                            <div class="form-field">
+                                <span class="form-field-label">Дата:</span>
+                                <div class="form-field-input"></div>
+                            </div>
+                            <div class="form-field">
+                                <span class="form-field-label">Предмет:</span>
+                                <div class="form-field-input"></div>
+                            </div>
+                            <div class="form-field">
+                                <span class="form-field-label">Инструкция:</span>
+                                <div class="form-field-input"></div>
+                            </div>
                             <table class="answer-table">
                                 <tr>
                                     <td><div class="circle empty"></div></td>
