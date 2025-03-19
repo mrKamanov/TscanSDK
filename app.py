@@ -110,7 +110,7 @@ def main():
 # Страница сканирования в реальном времени
 @app.route('/scan')
 def scan():
-    return render_template('index.html', questions=questions, choices=choices)
+    return render_template('scan.html', questions=questions, choices=choices)
 
 # Страница пакетной обработки
 @app.route('/batch')
@@ -125,6 +125,10 @@ def reports():
 @app.route('/instructions')
 def instructions():
     return render_template('instructions.html')
+
+@app.route('/constructor')
+def constructor():
+    return render_template('constructor.html')
 
 @socketio.on('start_camera')
 def handle_start_camera():
