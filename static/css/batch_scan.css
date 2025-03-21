@@ -163,8 +163,64 @@
 
 .correct-answers-grid {
     display: grid;
-    gap: 16px;
+    gap: 24px;
     margin-bottom: 24px;
+}
+
+.question-row {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.question-label {
+    color: #fff;
+    font-size: 1.1em;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.answers-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.answer-option {
+    position: relative;
+}
+
+.answer-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.answer-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.answer-option input[type="radio"]:checked + .answer-text {
+    background: rgba(79, 195, 247, 0.2);
+    border-color: rgba(79, 195, 247, 0.4);
+    transform: scale(1.05);
+}
+
+.answer-option:hover .answer-text {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
 }
 
 .process-button {
@@ -296,42 +352,6 @@
     font-weight: 500;
     color: var(--secondary-color);
     margin-bottom: 8px;
-}
-
-.answers-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.answer-option {
-    flex: 0 0 auto;
-    cursor: pointer;
-}
-
-.answer-text {
-    display: inline-block;
-    min-width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    border-radius: var(--border-radius);
-    background: rgba(0, 0, 0, 0.2);
-    color: var(--text-color);
-    transition: all var(--transition-speed) ease;
-    font-size: 1.1em;
-}
-
-.answer-option input[type="radio"]:checked + .answer-text {
-    background: var(--secondary-color);
-    color: var(--background-color);
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.answer-option:hover .answer-text {
-    background: rgba(136, 192, 208, 0.2);
-    transform: translateY(-2px);
 }
 
 /* Медиа-запросы */
