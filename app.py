@@ -1,10 +1,12 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify, send_file
 from flask_socketio import SocketIO, emit
 import cv2
 import base64
 import threading
 from video_processing import process_video_frame
 import numpy as np
+import json
+from multiple_processing import process_multiple_choice
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -130,6 +132,60 @@ def instructions():
 def constructor():
     return render_template('constructor.html')
 
+@app.route('/multiple')
+def multiple():
+    return render_template('multiple.html', questions=questions, choices=choices)
+
+@app.route('/process_multiple', methods=['POST'])
+def process_multiple():
+    try:
+        if 'image' not in request.files:
+            return jsonify({'success': False, 'error': 'Изображение не найдено'})
+
+        image = request.files['image']
+        questions = int(request.form['questions'])
+        choices = int(request.form['choices'])
+        correct_answers = json.loads(request.form['correctAnswers'])
+
+        # Чтение и обработка изображения
+        img_array = np.frombuffer(image.read(), np.uint8)
+        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+
+        # Обработка изображения и распознавание ответов
+        processed_frame, detected_answers = process_multiple_choice(img, questions, choices)
+
+        # Подсчет правильных ответов
+        correct_count = 0
+        total_questions = len(correct_answers)
+        incorrect_questions = []
+
+        for q_idx, (correct, detected) in enumerate(zip(correct_answers, detected_answers)):
+            if set(correct) == set(detected):
+                correct_count += 1
+            else:
+                incorrect_questions.append({
+                    'question_number': q_idx + 1,
+                    'correct_answers': correct,
+                    'student_answers': detected
+                })
+
+        score = (correct_count / total_questions) * 100
+
+        # Формирование результата
+        result = {
+            'success': True,
+            'workNumber': len(report_list) + 1,
+            'correctCount': correct_count,
+            'totalQuestions': total_questions,
+            'score': round(score, 1),
+            'incorrectQuestions': incorrect_questions
+        }
+
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
 @socketio.on('start_camera')
 def handle_start_camera():
     success = start_camera()
@@ -227,7 +283,6 @@ def handle_add_to_report(data):
     try:
         report = {}
         
-        # Проверяем, откуда пришли данные (из пакетной обработки или сканирования)
         if isinstance(data, dict) and 'result' in data:
             # Данные из режима сканирования
             result_str = data['result']
@@ -245,7 +300,7 @@ def handle_add_to_report(data):
                 'incorrect_question_numbers': [q['question_number'] for q in last_incorrect_questions]
             }
         else:
-            # Данные из пакетной обработки
+            # Данные из пакетной обработки или множественного выбора
             report = {
                 'work_number': len(report_list) + 1,
                 'correct_answers_count': data['correct_count'],
@@ -258,28 +313,21 @@ def handle_add_to_report(data):
         
         # Определяем оценку
         score = report['score_percentage']
-        if score >= 90:
-            report['grade'] = 5
-        elif score >= 70:
-            report['grade'] = 4
-        elif score >= 50:
-            report['grade'] = 3
-        else:
-            report['grade'] = 2
-            
-        # Добавляем отчет в список
+        grade = 2  # Минимальная оценка по умолчанию
+        
+        for grade_value, (min_score, max_score) in grading_criteria.items():
+            if min_score <= score <= max_score:
+                grade = grade_value
+                break
+                
+        report['grade'] = grade
         report_list.append(report)
         
-        # Отправляем подтверждение
         emit('report_added', {'success': True})
         
     except Exception as e:
-        print(f"Ошибка при добавлении в отчёт: {str(e)}")
-        emit('report_added', {
-            'success': False,
-            'message': str(e),
-            'data': data
-        })
+        print(f"Ошибка при добавлении в отчет: {str(e)}")
+        emit('report_added', {'success': False, 'message': str(e), 'data': data})
 
 def check_score_in_ranges(score, ranges):
     for i in range(len(ranges) - 1):
@@ -395,6 +443,46 @@ def handle_batch_image(data):
     except Exception as e:
         print(f"Ошибка обработки изображения: {str(e)}")
         emit('error', {'message': f'Ошибка обработки изображения: {str(e)}'})
+
+@socketio.on('process_multiple')
+def handle_multiple_processing(data):
+    try:
+        # Декодируем изображение из base64
+        image_data = data['image'].split(',')[1]
+        image_bytes = base64.b64decode(image_data)
+        nparr = np.frombuffer(image_bytes, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        # Получаем параметры теста
+        questions = data['questions']
+        choices = data['choices']
+        correct_answers = data['correctAnswers']
+        strict_mode = data.get('strictMode', True)  # По умолчанию строгий режим
+        image_size = 800
+
+        # Обрабатываем изображение
+        result_img, correct_count, score, incorrect_questions, correct_questions = process_multiple_choice(
+            img, questions, choices, correct_answers, image_size, strict_mode=strict_mode
+        )
+
+        # Конвертируем результат в base64
+        _, buffer = cv2.imencode('.jpg', result_img)
+        processed_image = base64.b64encode(buffer).decode('utf-8')
+
+        # Отправляем результат
+        emit('multiple_result', {
+            'processed_image': f'data:image/jpeg;base64,{processed_image}',
+            'correct_count': correct_count,
+            'questions': questions,
+            'score': score,
+            'correct_questions': correct_questions,
+            'incorrect_questions': incorrect_questions,
+            'strict_mode': strict_mode
+        })
+
+    except Exception as e:
+        print(f"Ошибка обработки множественного выбора: {str(e)}")
+        emit('error', {'message': str(e)})
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, allow_unsafe_werkzeug=True)
