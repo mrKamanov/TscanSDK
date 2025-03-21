@@ -781,6 +781,10 @@
             <i class="fas fa-images"></i>
             <span>Пакетная обработка</span>
         </a>
+        <a href="/multiple" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>Множественный выбор</span>
+        </a>
         <a href="/reports" class="nav-link">
             <i class="fas fa-chart-bar"></i>
             <span>Отчёты</span>
@@ -993,6 +997,150 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="instruction-section" id="multiple-choice">
+                    <h2><i class="fas fa-tasks"></i> Множественный выбор</h2>
+                    
+                    <div class="info-box">
+                        <div class="info-box-title">
+                            <i class="fas fa-info-circle"></i>
+                            <span>О множественном выборе</span>
+                        </div>
+                        <div class="info-box-content">
+                            Раздел множественного выбора позволяет создавать тесты, где на один вопрос может быть несколько правильных ответов. Это особенно полезно для сложных вопросов, требующих выбора нескольких вариантов или для вопросов с частично правильными ответами.
+                        </div>
+                    </div>
+
+                    <div class="step-by-step">
+                        <div class="step">
+                            <h3><i class="fas fa-cog"></i> 1. Настройка параметров теста</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-list-ol"></i>
+                                        <span>Количество вопросов</span>
+                                    </div>
+                                    <p>От 1 до 50 вопросов</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-check-square"></i>
+                                        <span>Варианты ответов</span>
+                                    </div>
+                                    <p>От 1 до 10 вариантов</p>
+                                </div>
+                            </div>
+                            <div class="tip-box">
+                                <strong><i class="fas fa-lightbulb"></i> Совет</strong>
+                                <p>При создании теста с множественным выбором важно учитывать, что чем больше вариантов ответов, тем сложнее ученикам будет ориентироваться в бланке. Рекомендуется использовать не более 5-6 вариантов для оптимальной читаемости.</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-check-double"></i> 2. Выбор правильных ответов</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example primary">
+                                        <i class="fas fa-check-square"></i>
+                                        <span>Выбор ответов</span>
+                                    </div>
+                                    <p>Отметьте все правильные варианты</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example secondary">
+                                        <i class="fas fa-undo"></i>
+                                        <span>Сброс выбора</span>
+                                    </div>
+                                    <p>Для изменения ответов</p>
+                                </div>
+                            </div>
+                            <div class="tip-box">
+                                <strong><i class="fas fa-info-circle"></i> Важно</strong>
+                                <p>Для каждого вопроса можно выбрать несколько правильных ответов. Система автоматически подсчитает частичные баллы за правильно выбранные варианты.</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-balance-scale"></i> 3. Режимы проверки</h3>
+                            <div class="controls-grid">
+                                <div class="control-item">
+                                    <h4><i class="fas fa-check-circle"></i> Строгий режим</h4>
+                                    <p>Вопрос считается правильным только если выбраны все правильные ответы и не выбраны неправильные</p>
+                                </div>
+                                <div class="control-item">
+                                    <h4><i class="fas fa-percentage"></i> Частичный режим</h4>
+                                    <p>Баллы начисляются пропорционально количеству правильно выбранных ответов</p>
+                                </div>
+                            </div>
+                            <div class="tip-box">
+                                <strong><i class="fas fa-lightbulb"></i> Совет</strong>
+                                <p>Строгий режим лучше использовать для вопросов, где все ответы должны быть выбраны правильно. Частичный режим подходит для вопросов с разным количеством правильных ответов.</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-upload"></i> 4. Загрузка и обработка</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example primary">
+                                        <i class="fas fa-file-upload"></i>
+                                        <span>Загрузить файлы</span>
+                                    </div>
+                                    <p>JPG, PNG форматы</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example success">
+                                        <i class="fas fa-play"></i>
+                                        <span>Начать обработку</span>
+                                    </div>
+                                    <p>Проверка ответов</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-chart-bar"></i> 5. Результаты проверки</h3>
+                            <div class="info-box">
+                                <div class="info-box-title">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Информация о результатах</span>
+                                </div>
+                                <div class="info-box-content">
+                                    <p>Для каждого вопроса система показывает:</p>
+                                    <ul class="feature-list">
+                                        <li>Выбранные учеником варианты ответов</li>
+                                        <li>Правильные варианты ответов</li>
+                                        <li>Количество правильно выбранных ответов</li>
+                                        <li>Процент правильных ответов</li>
+                                        <li>Балл за вопрос</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <strong><i class="fas fa-exclamation-triangle"></i> Важные моменты</strong>
+                        <ul class="feature-list">
+                            <li>При использовании строгого режима ученик должен выбрать все правильные ответы для получения балла за вопрос</li>
+                            <li>В частичном режиме баллы начисляются пропорционально количеству правильно выбранных ответов</li>
+                            <li>Если ученик выбирает все варианты ответов, вопрос автоматически считается неправильным</li>
+                            <li>Система учитывает как правильно выбранные, так и неправильно выбранные ответы</li>
+                            <li>Для каждого вопроса можно установить разное количество правильных ответов</li>
+                        </ul>
+                    </div>
+
+                    <div class="tip-box">
+                        <strong><i class="fas fa-star"></i> Рекомендации по использованию</strong>
+                        <ul class="feature-list">
+                            <li>Перед началом проверки убедитесь, что все правильные ответы отмечены корректно</li>
+                            <li>Используйте строгий режим для вопросов, где важна точность всех ответов</li>
+                            <li>Частичный режим лучше подходит для вопросов с разным количеством правильных ответов</li>
+                            <li>Проверяйте результаты каждого теста перед отправкой в отчет</li>
+                            <li>При необходимости можно изменить режим проверки и перезапустить обработку</li>
+                        </ul>
                     </div>
                 </div>
 
