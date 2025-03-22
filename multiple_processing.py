@@ -96,44 +96,38 @@ def draw_multiple_marks(img: np.ndarray, position: Tuple[int, int], mark_type: s
     thickness = max(2, min(cellW, cellH) // 20)
     circle_radius = mark_size + thickness
     
-    # Определяем цвета в зависимости от типа отметки
     colors = {
-        'correct': {  # Полностью правильный ответ
-            'fill': (0, 255, 0),  # Зеленый
+        'correct': {  
+            'fill': (0, 255, 0),  
             'border': (0, 200, 0),
             'mark': (255, 255, 255)
         },
-        'partial': {  # Частично правильный ответ (выбран правильный, но не все)
-            'fill': (255, 165, 0),  # Оранжевый
+        'partial': {  
+            'fill': (255, 165, 0),  
             'border': (200, 130, 0),
             'mark': (255, 255, 255)
         },
-        'incorrect': {  # Неправильный ответ
-            'fill': (255, 0, 0),  # Красный
+        'incorrect': {  
+            'fill': (255, 0, 0),  
             'border': (200, 0, 0),
             'mark': (255, 255, 255)
         },
-        'missed': {  # Пропущенный правильный ответ
-            'fill': (128, 128, 128),  # Серый
+        'missed': {  
+            'fill': (128, 128, 128),  
             'border': (100, 100, 100),
             'mark': (255, 255, 255)
-        },
-        'unselected': {  # Неправильный и невыбранный
-            'fill': (240, 240, 240),  # Светло-серый
-            'border': (200, 200, 200),
-            'mark': (128, 128, 128)
         }
     }
     
+    if mark_type == 'unselected':
+        return
+        
     color = colors[mark_type]
     
-    # Рисуем круг
     cv2.circle(img, (cX, cY), circle_radius, color['fill'], -1)
     cv2.circle(img, (cX, cY), circle_radius, color['border'], thickness)
     
-    # Рисуем отметку в зависимости от типа
     if mark_type in ['correct', 'partial']:
-        # Галочка для правильных и частично правильных
         points = np.array([
             [cX - mark_size, cY],
             [cX - mark_size//2, cY + mark_size//2],
@@ -142,7 +136,6 @@ def draw_multiple_marks(img: np.ndarray, position: Tuple[int, int], mark_type: s
         cv2.polylines(img, [points], isClosed=False, color=(0, 0, 0), thickness=thickness*2)
         cv2.polylines(img, [points], isClosed=False, color=color['mark'], thickness=thickness)
     elif mark_type == 'incorrect':
-        # Крестик для неправильных
         cv2.line(img, 
                 (cX - mark_size//2, cY - mark_size//2),
                 (cX + mark_size//2, cY + mark_size//2),
@@ -160,7 +153,6 @@ def draw_multiple_marks(img: np.ndarray, position: Tuple[int, int], mark_type: s
                 (cX + mark_size//2, cY - mark_size//2),
                 color['mark'], thickness)
     elif mark_type == 'missed':
-        # Кружок с точкой для пропущенных правильных
         cv2.circle(img, (cX, cY), mark_size//2, (0, 0, 0), -1)
         cv2.circle(img, (cX, cY), mark_size//2, color['mark'], thickness)
 
@@ -179,18 +171,17 @@ def showMultipleAnswers(img: np.ndarray, selected_answers: List[List[int]], corr
             
             if y in selected:
                 if y in correct:
-                    # Выбран и правильный
                     if selected == correct:
-                        mark_type = 'correct'  # Все ответы правильные
+                        mark_type = 'correct'  
                     else:
-                        mark_type = 'partial'  # Частично правильный ответ
+                        mark_type = 'partial'  
                 else:
-                    mark_type = 'incorrect'  # Выбран, но неправильный
+                    mark_type = 'incorrect'  
             else:
                 if y in correct:
-                    mark_type = 'missed'  # Не выбран, но правильный
+                    mark_type = 'missed'  
                 else:
-                    mark_type = 'unselected'  # Не выбран и неправильный
+                    mark_type = 'unselected'  
             
             draw_multiple_marks(img, pos, mark_type, cell_size)
 
@@ -223,13 +214,11 @@ def process_multiple_choice(img: np.ndarray, questions: int, choices: int, corre
                           brightness: float = 0, contrast: float = 1, saturation: float = 1, 
                           sharpness: float = 1) -> Tuple:
     try:
-        # Предварительная обработка изображения
         img = adjust_image(img, brightness, contrast, saturation, sharpness)
         new_width = choices * (image_size // choices)
         new_height = questions * (image_size // questions)
         img = cv2.resize(img, (new_width, new_height))
         
-        # Поиск и обработка контуров
         contours = find_contours(img)
         rectCon = rectContour(contours)
         
@@ -244,38 +233,31 @@ def process_multiple_choice(img: np.ndarray, questions: int, choices: int, corre
         pts1 = np.float32(biggestPoints)
         pts2 = np.float32([[0, 0], [new_width, 0], [0, new_height], [new_width, new_height]])
         
-        # Преобразование перспективы
         matrix = cv2.getPerspectiveTransform(pts1, pts2)
         imgWarpColored = cv2.warpPerspective(img, matrix, (new_width, new_height))
         
-        # Улучшенная обработка изображения для выделения заштрихованных областей
         imgWarpGray = cv2.cvtColor(imgWarpColored, cv2.COLOR_BGR2GRAY)
         imgBlur = cv2.GaussianBlur(imgWarpGray, (5, 5), 1)
         imgThresh = cv2.threshold(imgBlur, 170, 255, cv2.THRESH_BINARY_INV)[1]
         
-        # Морфологические операции для удаления шума и усиления заштрихованных областей
         kernel = np.ones((3, 3), np.uint8)
         imgMorph = cv2.morphologyEx(imgThresh, cv2.MORPH_CLOSE, kernel)
         imgMorph = cv2.morphologyEx(imgMorph, cv2.MORPH_OPEN, kernel)
         
-        # Разделение на ячейки и анализ
         boxes = splitBoxes(imgMorph, questions, choices)
         myPixelVal = np.array([[cv2.countNonZero(boxes[i * choices + j]) 
                                for j in range(choices)] for i in range(questions)])
         
-        # Улучшенный алгоритм определения заштрихованных ячеек
+        
         selected_answers = []
         for i in range(questions):
             row_values = myPixelVal[i]
             max_val = np.max(row_values)
             if max_val > 0:
-                # Адаптивный порог на основе максимального значения в строке
-                threshold = max_val * 0.5  # Увеличили порог до 50% от максимума
+                threshold = max_val * 0.5  
                 row_answers = [j for j, val in enumerate(row_values) if val > threshold]
                 
-                # Дополнительная проверка для случаев, когда несколько ячеек близки к порогу
                 if len(row_answers) > 0:
-                    # Если есть явно выделяющиеся ответы, оставляем только их
                     max_in_selected = max(row_values[j] for j in row_answers)
                     row_answers = [j for j in row_answers if row_values[j] > max_in_selected * 0.8]
             else:
@@ -283,7 +265,6 @@ def process_multiple_choice(img: np.ndarray, questions: int, choices: int, corre
             
             selected_answers.append(row_answers)
         
-        # Проверка правильности ответов с учетом режима оценивания
         correct_count = 0
         correct_questions = []
         incorrect_questions = []
@@ -292,9 +273,7 @@ def process_multiple_choice(img: np.ndarray, questions: int, choices: int, corre
             selected = set(selected_answers[i])
             correct = set(correct_answers[i])
             
-            # Проверяем, не выбраны ли все варианты ответов
             if len(selected) == choices:
-                # Если выбраны все варианты - вопрос считается неправильным
                 question_score = 0.0
                 result_info = {
                     "question_number": i + 1,
@@ -304,26 +283,22 @@ def process_multiple_choice(img: np.ndarray, questions: int, choices: int, corre
                     "correct_selected": 0,
                     "total_correct": len(correct),
                     "incorrect_selected": choices,
-                    "all_selected": True  # Флаг, что выбраны все варианты
+                    "all_selected": True 
                 }
                 incorrect_questions.append(result_info)
                 continue
 
             if len(correct) > 0:
-                correct_selected = len(selected & correct)  # Количество правильно выбранных
-                incorrect_selected = len(selected - correct)  # Количество неправильно выбранных
-                total_correct = len(correct)  # Общее количество правильных ответов
+                correct_selected = len(selected & correct)  
+                incorrect_selected = len(selected - correct)  
+                total_correct = len(correct)  
                 
-                # Вычисляем оценку в зависимости от режима
                 if strict_mode:
-                    # Строгий режим: все должно быть правильно
                     question_score = 1.0 if selected == correct else 0.0
                 else:
-                    # Частичный режим: учитываем процент правильных ответов
-                    if incorrect_selected == 0:  # Если нет неправильных ответов
+                    if incorrect_selected == 0:  
                         question_score = correct_selected / total_correct
                     else:
-                        # Если есть неправильные ответы, уменьшаем оценку
                         question_score = max(0, (correct_selected - incorrect_selected) / total_correct)
             else:
                 question_score = 1 if len(selected) == 0 else 0
@@ -341,13 +316,12 @@ def process_multiple_choice(img: np.ndarray, questions: int, choices: int, corre
                     "correct_selected": len(selected & correct),
                     "total_correct": len(correct),
                     "incorrect_selected": len(selected - correct),
-                    "all_selected": False  # Флаг, что выбраны НЕ все варианты
+                    "all_selected": False  
                 }
                 incorrect_questions.append(result_info)
         
         score = (correct_count / questions) * 100
         
-        # Визуализация результатов
         imgFinal = imgWarpColored.copy()
         showMultipleAnswers(imgFinal, selected_answers, correct_answers, questions, choices)
         drawGrid(imgFinal, questions, choices)

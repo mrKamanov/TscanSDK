@@ -37,7 +37,7 @@ is_paused = False
 original_paused_frame = None
 paused_frame = None
 paused_result = None
-overlay_mode = False  # Переменная для режима отображения
+overlay_mode = False  
 camera_thread = None
 
 def start_camera():
@@ -104,22 +104,22 @@ def process_camera_frames():
             print(f"Ошибка обработки кадра: {str(e)}")
             continue
 
-# Главная страница (меню)
+
 @app.route('/')
 def main():
     return render_template('main.html')
 
-# Страница сканирования в реальном времени
+
 @app.route('/scan')
 def scan():
     return render_template('scan.html', questions=questions, choices=choices)
 
-# Страница пакетной обработки
+
 @app.route('/batch')
 def batch():
     return render_template('batch_scan.html', questions=questions, choices=choices)
 
-# Страница отчетов
+
 @app.route('/reports')
 def reports():
     return render_template('reports.html', report_list=report_list, questions=questions)
@@ -209,13 +209,13 @@ def handle_toggle_pause():
     if is_paused:
         success, frame = cap.read()
         if success:
-            original_paused_frame = frame  # Сохраняем оригинальный кадр
+            original_paused_frame = frame  
             result, correct_answers_count, score, incorrect_questions, grading = process_video_frame(
                 frame, questions, choices, correct_answers, image_size, overlay_mode
             )
             global last_grading, last_incorrect_questions
-            last_grading = [int(g) for g in grading]  # Преобразуем grading в список стандартных целых чисел
-            last_incorrect_questions = incorrect_questions  # Сохраняем список неправильных ответов
+            last_grading = [int(g) for g in grading]  
+            last_incorrect_questions = incorrect_questions  
             paused_frame = result
             paused_result = f"{correct_answers_count}/{questions}, {score:.2f}%"
             imgRGB = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
@@ -248,7 +248,7 @@ def handle_apply_settings(data):
         # Применяем новые настройки
         questions = new_questions
         choices = new_choices
-        correct_answers = [0] * questions  # Обновляем список правильных ответов
+        correct_answers = [0] * questions  
         emit('settings_applied', {'message': 'Настройки применены'})
     except ValueError as e:
         emit('error', {'message': 'Неверный формат данных. Убедитесь, что введены числа.'})
@@ -267,8 +267,8 @@ def handle_update_correct_answers(data):
                 image_size,
                 overlay_mode
             )
-            last_grading = [int(g) for g in grading]  # Обновляем результаты проверки
-            last_incorrect_questions = incorrect_questions  # Обновляем список неправильных ответов
+            last_grading = [int(g) for g in grading]  
+            last_incorrect_questions = incorrect_questions  
             imgRGB = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
             ret, buffer = cv2.imencode('.jpg', imgRGB)
             frame_base64 = base64.b64encode(buffer).decode('utf-8')
@@ -313,7 +313,7 @@ def handle_add_to_report(data):
         
         # Определяем оценку
         score = report['score_percentage']
-        grade = 2  # Минимальная оценка по умолчанию
+        grade = 2 
         
         for grade_value, (min_score, max_score) in grading_criteria.items():
             if min_score <= score <= max_score:
@@ -349,7 +349,7 @@ def handle_apply_grading_criteria(data):
         if validate_grading_criteria(new_criteria):
             grading_criteria = new_criteria
             emit('criteria_applied', {'message': 'Критерии оценок применены'})
-            reevaluate_reports()  # Пересчитываем оценки для существующих работ
+            reevaluate_reports()  
         else:
             emit('error', {'message': 'Значения критериев не должны пересекаться.'})
     except ValueError as e:
@@ -436,7 +436,7 @@ def handle_batch_image(data):
                 }
                 for q in incorrect_questions
             ],
-            'processed_image': f'data:image/jpeg;base64,{result_image_base64}'  # Добавляем обработанное изображение
+            'processed_image': f'data:image/jpeg;base64,{result_image_base64}' 
         }
 
         emit('batch_result', response)
@@ -457,7 +457,7 @@ def handle_multiple_processing(data):
         questions = data['questions']
         choices = data['choices']
         correct_answers = data['correctAnswers']
-        strict_mode = data.get('strictMode', True)  # По умолчанию строгий режим
+        strict_mode = data.get('strictMode', True)  
         image_size = 800
 
         # Обрабатываем изображение
