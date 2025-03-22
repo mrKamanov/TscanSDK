@@ -132,7 +132,7 @@ body {
     font-size: 1.1rem;
 }
 
-/* Стили для предпросмотра */
+
 .preview-section {
     flex: 1;
     background: var(--surface-color);

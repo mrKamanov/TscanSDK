@@ -11,11 +11,11 @@ const borderPaddingInput = document.getElementById('border-padding');
 const scaleInput = document.getElementById('scale');
 const fontSizeInput = document.getElementById('font-size');
 
-//Header Elements
+
 const omrTitleHeader = document.getElementById('omr-title-header');
 const omrDescriptionHeader = document.getElementById('omr-description-header');
 
-//Student Info Elements
+
 const studentNameLabel = document.getElementById('student-name-label');
 const studentNameValue = document.getElementById('student-name-value');
 const dateLabel = document.getElementById('date-label');
