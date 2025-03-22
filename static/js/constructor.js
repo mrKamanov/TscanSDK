@@ -1,4 +1,4 @@
-// Инициализация переменных
+
 const omrSheet = document.getElementById('omr-sheet');
 const bubblesContainer = document.getElementById('bubbles-container');
 const numQuestionsInput = document.getElementById('num-questions');
