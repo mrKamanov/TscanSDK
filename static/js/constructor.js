@@ -5,6 +5,9 @@ const numQuestionsInput = document.getElementById('num-questions');
 const numOptionsInput = document.getElementById('num-options');
 const omrSettingsForm = document.getElementById('omr-settings');
 const borderWidthInput = document.getElementById('border-width');
+const bubbleSizeInput = document.getElementById('bubble-size');
+const bubbleSpacingInput = document.getElementById('bubble-spacing');
+const borderPaddingInput = document.getElementById('border-padding');
 const scaleInput = document.getElementById('scale');
 const fontSizeInput = document.getElementById('font-size');
 
@@ -29,6 +32,19 @@ let scale = 1;
 let offsetX = 0;
 let offsetY = 0;
 let animationFrameId;
+
+// Функция применения размеров и отступов
+function applyBubbleStyles() {
+    const bubbleSize = bubbleSizeInput.value;
+    const bubbleSpacing = bubbleSpacingInput.value;
+    const borderPadding = borderPaddingInput.value;
+    const borderWidth = borderWidthInput.value;
+    
+    bubblesContainer.style.setProperty('--bubble-size', `${bubbleSize}px`);
+    bubblesContainer.style.setProperty('--bubble-spacing', `${bubbleSpacing}px`);
+    bubblesContainer.style.setProperty('--border-padding', `${borderPadding}px`);
+    bubblesContainer.style.setProperty('--border-width', `${borderWidth}px`);
+}
 
 // Функция генерации OMR-листа
 function generateOmrSheet(numQuestions, numOptions) {
@@ -60,9 +76,7 @@ function generateOmrSheet(numQuestions, numOptions) {
     }
     bubblesContainer.style.height = 'auto';
     bubblesContainer.style.width = 'fit-content';
-    const borderWidth = parseInt(borderWidthInput.value);
-    bubblesContainer.style.borderWidth = `${borderWidth}px`;
-    bubblesContainer.style.borderColor = 'black';
+    applyBubbleStyles();
     const fontSize = parseInt(fontSizeInput.value);
     omrSheet.style.fontSize = `${fontSize}px`;
     omrTitleHeader.style.fontSize = `${fontSize * 1.3}px`;
@@ -166,6 +180,40 @@ async function saveAsImage() {
     link.download = 'omr-form.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
+}
+
+function saveAsPNG() {
+    const omrSheet = document.getElementById('omr-sheet');
+    
+    // Создаем временный canvas
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Устанавливаем размеры canvas равными размерам OMR бланка
+    canvas.width = omrSheet.offsetWidth;
+    canvas.height = omrSheet.offsetHeight;
+    
+    // Делаем фон прозрачным
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Используем html2canvas для конвертации OMR бланка в изображение
+    html2canvas(omrSheet, {
+        backgroundColor: null, // Прозрачный фон
+        scale: 2, // Увеличиваем качество
+        useCORS: true,
+        logging: false,
+        onclone: function(clonedDoc) {
+            // Устанавливаем белый фон для клонированного элемента
+            const clonedSheet = clonedDoc.getElementById('omr-sheet');
+            clonedSheet.style.background = 'transparent';
+        }
+    }).then(function(canvas) {
+        // Создаем ссылку для скачивания
+        const link = document.createElement('a');
+        link.download = 'omr_sheet.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
 }
 
 // Функции для трансформации
@@ -337,4 +385,11 @@ generateOmrSheet(initialNumQuestions, initialNumOptions);
 
 // Добавляем обработчики для кнопок сохранения
 document.getElementById('save-pdf').addEventListener('click', saveAsPDF);
-document.getElementById('save-image').addEventListener('click', saveAsImage); 
+document.getElementById('save-image').addEventListener('click', saveAsImage);
+document.getElementById('save-png').addEventListener('click', saveAsPNG);
+
+// Обработчики изменения размеров и отступов
+bubbleSizeInput.addEventListener('input', applyBubbleStyles);
+bubbleSpacingInput.addEventListener('input', applyBubbleStyles);
+borderPaddingInput.addEventListener('input', applyBubbleStyles);
+borderWidthInput.addEventListener('input', applyBubbleStyles); 

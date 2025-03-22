@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script>window.jsPDF = window.jspdf.jsPDF;</script>
 </head>
 <body>
@@ -78,9 +79,22 @@
                     </div>
 
                     <div class="settings-group">
-                        <h3><i class="fas fa-sliders-h"></i> Стилизация</h3>
+                        <h3><i class="fas fa-ruler"></i>Размеры и отступы</h3>
+                        <label for="bubble-size">Размер кружков (px):</label>
+                        <input type="number" id="bubble-size" name="bubble-size" value="30" min="20" max="50">
+                        
+                        <label for="bubble-spacing">Отступ между кружками (px):</label>
+                        <input type="number" id="bubble-spacing" name="bubble-spacing" value="10" min="5" max="30">
+                        
+                        <label for="border-padding">Отступ от рамки (px):</label>
+                        <input type="number" id="border-padding" name="border-padding" value="10" min="5" max="50">
+                        
                         <label for="border-width">Толщина рамки (px):</label>
-                        <input type="number" id="border-width" value="2" min="1" max="10">
+                        <input type="number" id="border-width" name="border-width" value="4" min="1" max="10">
+                    </div>
+
+                    <div class="settings-group">
+                        <h3><i class="fas fa-sliders-h"></i> Стилизация</h3>
                         <label for="scale">Масштаб области ответов:</label>
                         <input type="range" id="scale" min="0.5" max="2" value="1" step="0.01">
                         <label for="font-size">Размер шрифта (px):</label>
@@ -168,13 +182,14 @@
 
     <!-- Кнопки действий -->
     <div class="action-buttons">
-        <button class="action-button save-pdf" id="save-pdf">
+        <button class="action-button save-pdf" id="save-pdf" title="Сохранить PDF">
             <i class="fas fa-file-pdf"></i>
-            Сохранить PDF
         </button>
-        <button class="action-button save-image" id="save-image">
+        <button class="action-button save-image" id="save-image" title="Сохранить PNG с фоном">
             <i class="fas fa-file-image"></i>
-            Сохранить изображение
+        </button>
+        <button class="action-button save-png" id="save-png" title="Сохранить PNG без фона">
+            <i class="fas fa-image"></i>
         </button>
     </div>
 

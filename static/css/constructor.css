@@ -241,24 +241,19 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
-    padding: 20px;
-    border: 2px solid #000000;
+    gap: var(--bubble-block-spacing, 20px);
+    padding: var(--border-padding, 10px);
+    border: var(--border-width, 4px) solid #000000;
     border-radius: var(--border-radius);
     margin: 0;
     box-sizing: border-box;
     width: fit-content;
-    transform-origin: 0 0;
-    position: relative;
 }
 
 .bubble-block {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 12px;
-    width: 100%;
-    box-sizing: border-box;
+    align-items: center;
+    gap: 20px;
 }
 
 .bubble-block .question-number {
@@ -271,73 +266,151 @@ body {
 
 .bubbles {
     display: flex;
-    gap: 12px;
+    gap: var(--bubble-spacing, 10px);
+    align-items: center;
 }
 
 .bubble {
-    width: 28px;
-    height: 28px;
+    width: var(--bubble-size, 30px);
+    height: var(--bubble-size, 30px);
+    border: 2px solid #000000;
     border-radius: 50%;
-    border: 2px solid #3498db;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 5px;
-    position: relative;
-    font-size: 14px;
-    color: #3498db;
-    line-height: 1;
-    transform: scale(1);
-    transition: transform 0.2s ease;
+    font-size: calc(var(--bubble-size, 30px) * 0.4);
+    color: #000000;
+    background: white;
     cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
 }
 
 .bubble:hover {
+    background: rgba(0, 0, 0, 0.05);
     transform: scale(1.1);
 }
 
 .bubble.selected {
-    background-color: #3498db;
+    background: #000000;
     color: white;
 }
 
 .bubble.selected::after {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(45deg);
-    width: 8px;
-    height: 16px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    padding: 0;
+    width: 60%;
+    height: 60%;
+    background: white;
+    border-radius: 50%;
+    top: 20%;
+    left: 20%;
+}
+
+.question-number {
+    font-weight: 500;
+    color: #000000;
+    min-width: 80px;
+}
+
+.drag-handle {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: move;
+    display: none;
+}
+
+.drag-handle.top-left {
+    top: -10px;
+    left: -10px;
+}
+
+.drag-handle.top-right {
+    top: -10px;
+    right: -10px;
+}
+
+.drag-handle.bottom-left {
+    bottom: -10px;
+    left: -10px;
+}
+
+.drag-handle.bottom-right {
+    bottom: -10px;
+    right: -10px;
+}
+
+.bubbles-container:hover .drag-handle {
+    display: block;
+}
+
+.controls {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.control-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary-color);
+    color: white;
+}
+
+.control-button:hover {
+    background: var(--primary-color-dark);
+    transform: translateY(-2px);
+}
+
+.control-button i {
+    font-size: 1.1rem;
+}
+
+.control-button.secondary {
+    background: var(--surface-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.control-button.secondary:hover {
+    background: var(--background-color);
 }
 
 /* Стили для кнопок действий */
 .action-buttons {
     position: fixed;
-    bottom: 24px;
-    right: 24px;
+    right: 20px;
+    bottom: 20px;
     display: flex;
-    gap: 12px;
+    flex-direction: column;
+    gap: 10px;
     z-index: 1000;
 }
 
 .action-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
     background: var(--primary-color);
     color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: var(--border-radius);
+    font-size: 20px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 16px;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    justify-content: center;
     box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
 }
 
 .action-button:hover {
@@ -346,7 +419,7 @@ body {
 }
 
 .action-button.save-pdf {
-    background: var(--success-color);
+    background: var(--primary-color);
 }
 
 .action-button.save-image {
@@ -494,5 +567,25 @@ input[type="range"]::-webkit-slider-thumb:hover {
     
     .action-buttons {
         display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .constructor-layout {
+        flex-direction: column;
+    }
+
+    #settings-form {
+        position: static;
+        flex: none;
+    }
+
+    .preview-section {
+        overflow-x: auto;
+    }
+
+    #omr-sheet {
+        width: 100%;
+        min-width: 8.5in;
     }
 } 
