@@ -60,6 +60,32 @@ document.addEventListener('DOMContentLoaded', () => {
         addToReportButton.disabled = !isPaused;
     });
 
+    // Обработчик клавиши пробел для создания стоп-кадра
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && !e.repeat) {
+            e.preventDefault(); // Предотвращаем прокрутку страницы
+            socket.emit('toggle_pause');
+            isPaused = !isPaused;
+            captureFrameButton.classList.toggle('paused');
+            addToReportButton.disabled = !isPaused;
+        }
+    });
+
+    // Обработчик сочетания клавиш Alt + A для добавления в отчёт
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'KeyA' && e.altKey && !e.repeat) {
+            e.preventDefault(); // Предотвращаем стандартное поведение
+            if (!addToReportButton.disabled) {
+                const result = localStorage.getItem('currentResult');
+                if (result) {
+                    socket.emit('add_to_report', { result });
+                } else {
+                    alert('Нет текущего результата для добавления в отчёт.');
+                }
+            }
+        }
+    });
+
     // Обработчик клика для кнопки "Включить камеру"
     startCameraButton.addEventListener('click', () => {
         socket.emit('start_camera');
@@ -142,6 +168,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // Обработчик события "error" от сервера
     socket.on('error', (data) => {
         alert(data.message);
+    });
+
+    // Обработчик успешного добавления в отчёт
+    socket.on('report_added', (response) => {
+        console.log('Получен ответ от сервера:', response);
+        if (response.success) {
+            console.log('Создаю уведомление...');
+            // Создаем элемент уведомления
+            const notification = document.createElement('div');
+            notification.className = 'notification success';
+            notification.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <span>Результат успешно добавлен в отчёт</span>
+            `;
+            
+            // Добавляем уведомление на страницу
+            document.body.appendChild(notification);
+            console.log('Уведомление добавлено на страницу');
+            
+            // Удаляем уведомление через 3 секунды
+            setTimeout(() => {
+                console.log('Начинаю анимацию исчезновения...');
+                notification.classList.add('fade-out');
+                setTimeout(() => {
+                    console.log('Удаляю уведомление...');
+                    notification.remove();
+                }, 500);
+            }, 3000);
+        } else {
+            console.error('Ошибка при добавлении в отчёт:', response.message);
+            alert('Ошибка при добавлении в отчёт: ' + response.message);
+        }
     });
 
     // Обработчик статуса камеры
