@@ -473,11 +473,52 @@
             color: var(--secondary-color);
             font-size: 1.2em;
             margin-bottom: 12px;
+            width: 100%;
         }
 
         .info-box-content {
             color: var(--text-color);
             line-height: 1.6;
+            margin-top: 8px;
+        }
+
+        .info-box .info-icon {
+            font-size: 1.5em;
+            color: var(--secondary-color);
+            flex-shrink: 0;
+        }
+
+        .info-box strong {
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            margin-left: 12px;
+        }
+
+        .info-box p {
+            margin: 8px 0 0 0;
+        }
+
+        .info-box ul.feature-list {
+            margin: 12px 0 0 0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .info-box {
+                padding: 16px;
+            }
+
+            .info-box-title {
+                font-size: 1.1em;
+                margin-bottom: 8px;
+            }
+
+            .info-box .info-icon {
+                font-size: 1.3em;
+            }
+
+            .info-box strong {
+                font-size: 1.1em;
+            }
         }
 
         .criteria-table {
@@ -764,6 +805,92 @@
             border-radius: 4px;
             padding: 0 10px;
         }
+
+        .hotkeys-info {
+            background: linear-gradient(135deg, rgba(94, 129, 172, 0.1), rgba(136, 192, 208, 0.1));
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 16px 0;
+            border: 1px solid rgba(136, 192, 208, 0.2);
+        }
+
+        .hotkeys-info h4 {
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hotkey-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 12px 0;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            transition: transform 0.2s ease;
+        }
+
+        .hotkey-row:hover {
+            transform: translateX(4px);
+        }
+
+        .hotkey-badge {
+            background: var(--secondary-color);
+            color: var(--text-color-inverse);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+            min-width: 80px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .hotkey-desc {
+            color: var(--text-color);
+            font-size: 1em;
+        }
+
+        .tip {
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--secondary-color);
+            font-size: 0.9em;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        .tip i {
+            font-size: 1.2em;
+            color: var(--secondary-color);
+        }
+
+        @media screen and (max-width: 768px) {
+            .hotkeys-info {
+                padding: 16px;
+            }
+
+            .hotkey-row {
+                padding: 6px;
+                gap: 12px;
+            }
+
+            .hotkey-badge {
+                min-width: 60px;
+                padding: 4px 8px;
+            }
+
+            .hotkey-desc {
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -879,6 +1006,23 @@
                         </div>
                     </div>
 
+                    <div class="hotkeys-info">
+                        <h4><i class="fas fa-keyboard"></i> Горячие клавиши</h4>
+                        <p>Для удобства работы доступны следующие сочетания клавиш:</p>
+                        <div class="hotkey-row">
+                            <div class="hotkey-badge">Space</div>
+                            <span class="hotkey-desc">Создать стоп-кадр для проверки результата</span>
+                        </div>
+                        <div class="hotkey-row">
+                            <div class="hotkey-badge">Alt + A</div>
+                            <span class="hotkey-desc">Добавить текущий результат в отчёт</span>
+                        </div>
+                        <div class="tip">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Использование горячих клавиш значительно ускоряет процесс проверки тестов!</span>
+                        </div>
+                    </div>
+
                     <h3><i class="fas fa-eye"></i> Режимы отображения камеры</h3>
                     <p>В приложении доступна функция переключения режима отображения камеры, которая особенно полезна при работе с тестами, содержащими большое количество вопросов:</p>
                     
@@ -928,7 +1072,7 @@
                             <span>О пакетной обработке</span>
                         </div>
                         <div class="info-box-content">
-                            Пакетная обработка позволяет проверить несколько тестов одновременно, что значительно экономит время при проверке большого количества работ.
+                            Пакетная обработка позволяет проверить несколько тестов одновременно, что значительно экономит время при проверке большого количества работ. Данный режим предназначен для проверки тестов с единичным выбором ответа в каждом вопросе.
                         </div>
                     </div>
 
@@ -1009,7 +1153,7 @@
                             <span>О множественном выборе</span>
                         </div>
                         <div class="info-box-content">
-                            Раздел множественного выбора позволяет создавать тесты, где на один вопрос может быть несколько правильных ответов. Это особенно полезно для сложных вопросов, требующих выбора нескольких вариантов или для вопросов с частично правильными ответами.
+                            Раздел множественного выбора специально разработан для проверки тестов, где на один вопрос может быть несколько правильных ответов. Это особенно полезно для сложных вопросов, требующих выбора нескольких вариантов или для вопросов с частично правильными ответами. В отличие от пакетной обработки, этот режим позволяет работать с тестами, где ученик может отметить более одного варианта ответа на каждый вопрос.
                         </div>
                     </div>
 
@@ -1423,8 +1567,13 @@
                     <h2><i class="fas fa-file-alt"></i> Работа с бланком ответов</h2>
                     
                     <div class="info-box">
-                        <i class="fas fa-info-circle"></i>
-                        <strong>Важно:</strong> Для корректной работы сканера необходимо использовать правильный формат бланка ответов.
+                        <div class="info-box-title">
+                            <i class="fas fa-info-circle info-icon"></i>
+                            <span>Важно</span>
+                        </div>
+                        <div class="info-box-content">
+                            Для корректной работы сканера необходимо использовать правильный формат бланка ответов.
+                        </div>
                     </div>
 
                     <div class="template-example">
@@ -1500,10 +1649,12 @@
                             <h3>Требования к бланку:</h3>
                             <ul>
                                 <li><i class="fas fa-check"></i> Оптимальное количество вопросов: от 5 до 20</li>
-                                <li><i class="fas fa-check"></i> Поддерживаются только вопросы с единичным ответом</li>
+                                <li><i class="fas fa-check"></i> Режим пакетной обработки работает только с тестами, где в каждом вопросе нужно выбрать один правильный ответ</li>
+                                <li><i class="fas fa-check"></i> Режим множественного выбора позволяет проверять тесты, где в вопросах можно отметить несколько правильных ответов</li>
                                 <li><i class="fas fa-check"></i> При разном количестве вариантов ответов необходимо стереть неиспользуемые ячейки</li>
                                 <li><i class="fas fa-check"></i> При изменении количества вопросов нужно соответственно изменить количество строк</li>
                                 <li><i class="fas fa-check"></i> Важно обозначить границу таблицы для корректного распознавания</li>
+                                <li><i class="fas fa-check"></i> Перед проверкой теста с множественным выбором обязательно включите соответствующий режим в настройках</li>
                             </ul>
                         </div>
                     </div>
