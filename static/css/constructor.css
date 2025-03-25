@@ -242,15 +242,13 @@ body {
     margin: 0;
     box-sizing: border-box;
     width: fit-content;
-    background: #ffffff;
 }
 
 .questions-container {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    min-width: 200px;
-    background: #ffffff;
+    padding: 16px;
     border-radius: 0;
 }
 
@@ -259,12 +257,6 @@ body {
     align-items: center;
     gap: 12px;
     padding: 4px 0;
-}
-
-.question-row span {
-    font-weight: 500;
-    color: #000000;
-    min-width: 25px;
 }
 
 .bubbles-wrapper {
@@ -584,22 +576,26 @@ input[type="range"]::-webkit-slider-thumb:hover {
         border: none;
         box-shadow: none;
         transform: none;
+        background: transparent !important;
     }
     
     .header h1 {
         font-size: 24px;
         color: #000000;
+        background: transparent !important;
     }
     
     .header p {
         font-size: 16px;
         color: #000000;
+        background: transparent !important;
     }
     
     .student-info table td {
         padding: 6px;
         border-bottom: 1px solid #000000;
         color: #000000;
+        background: transparent !important;
     }
     
     .bubble-block .question-number {
@@ -612,6 +608,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
         height: 28px;
         border: 2px solid #3498db;
         font-size: 14px;
+        background: transparent !important;
     }
     
     .bubble.selected {
@@ -627,18 +624,18 @@ input[type="range"]::-webkit-slider-thumb:hover {
     }
 
     .bubbles-container {
-        background: #ffffff !important;
+        background: transparent !important;
     }
 
     .questions-container {
         border: var(--border-width, 4px) solid #000000 !important;
-        background: #ffffff !important;
+        background: transparent !important;
         -webkit-print-color-adjust: exact;
     }
 
     .bubble {
         border: 2px solid #000000 !important;
-        background: #ffffff !important;
+        background: transparent !important;
         color: #000000 !important;
         -webkit-print-color-adjust: exact;
     }
@@ -647,6 +644,89 @@ input[type="range"]::-webkit-slider-thumb:hover {
         color: #000 !important;
         -webkit-print-color-adjust: exact;
     }
+
+    #student-name-value,
+    #date-value,
+    #subject-value,
+    #instruction-value {
+        background: transparent !important;
+    }
+}
+
+/* Добавляем общие стили для прозрачного фона */
+#omr-sheet.transparent-mode,
+#omr-sheet.transparent-mode *,
+#omr-sheet.transparent-mode *::before,
+#omr-sheet.transparent-mode *::after {
+    background-color: transparent !important;
+    background-image: none !important;
+    background: none !important;
+    box-shadow: none !important;
+}
+
+#omr-sheet.transparent-mode .preview-section,
+#omr-sheet.transparent-mode .bubbles-section,
+#omr-sheet.transparent-mode .bubbles-container,
+#omr-sheet.transparent-mode .questions-container {
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+#omr-sheet.transparent-mode .student-info table td {
+    background: none !important;
+    background-color: transparent !important;
+}
+
+#omr-sheet.transparent-mode .bubble {
+    background: none !important;
+    background-color: transparent !important;
+    border: 2px solid #000000 !important;
+}
+
+#omr-sheet.transparent-mode .bubble.selected {
+    background: #000000 !important;
+}
+
+/* Переопределяем стили для области с тестом */
+.bubbles-container {
+    display: flex;
+    gap: var(--column-spacing, 50px);
+    margin: 0;
+    box-sizing: border-box;
+    width: fit-content;
+}
+
+.questions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 0;
+}
+
+.question-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 0;
+}
+
+.bubbles-wrapper {
+    display: flex;
+    gap: var(--bubble-spacing, 10px);
+    align-items: center;
+}
+
+/* Убираем все фоновые цвета по умолчанию */
+.preview-section,
+.bubbles-section,
+.bubbles-container,
+.questions-container,
+.question-row,
+.bubbles-wrapper {
+    background: none;
+    background-color: transparent;
 }
 
 @media (max-width: 768px) {
@@ -718,16 +798,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 #align-columns:hover {
     background: var(--secondary-color-hover);
-}
-
-.questions-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 16px;
-    background: var(--background-color);
-    border-radius: var(--border-radius);
-    border: 1px solid var(--border-color);
 }
 
 .question-row {

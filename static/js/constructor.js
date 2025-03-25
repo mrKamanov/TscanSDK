@@ -187,30 +187,86 @@ async function saveAsImage() {
     link.click();
 }
 
+function clearBackgrounds(element) {
+    // Временно сохраняем текущие стили фона
+    const elements = element.querySelectorAll('*');
+    const savedStyles = new Map();
+    
+    // Сохраняем и очищаем фоны
+    elements.forEach(el => {
+        savedStyles.set(el, {
+            background: el.style.background,
+            backgroundColor: el.style.backgroundColor
+        });
+        el.style.background = 'transparent';
+        el.style.backgroundColor = 'transparent';
+    });
+    
+    // Также сохраняем стили самого элемента
+    savedStyles.set(element, {
+        background: element.style.background,
+        backgroundColor: element.style.backgroundColor
+    });
+    element.style.background = 'transparent';
+    element.style.backgroundColor = 'transparent';
+    
+    return savedStyles;
+}
+
+function restoreBackgrounds(savedStyles) {
+    savedStyles.forEach((styles, element) => {
+        element.style.background = styles.background;
+        element.style.backgroundColor = styles.backgroundColor;
+    });
+}
+
 function saveAsPNG() {
     const omrSheet = document.getElementById('omr-sheet');
     
-    // Создаем временный canvas
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    // Скрываем элементы перетаскивания
+    document.querySelectorAll('.drag-handle').forEach(handle => {
+        handle.style.display = 'none';
+    });
     
-    // Устанавливаем размеры canvas равными размерам OMR бланка
-    canvas.width = omrSheet.offsetWidth;
-    canvas.height = omrSheet.offsetHeight;
+    // Добавляем класс для прозрачного режима
+    omrSheet.classList.add('transparent-mode');
     
-    // Делаем фон прозрачным
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Сохраняем текущие стили
+    const savedStyles = new Map();
+    const allElements = omrSheet.querySelectorAll('*');
+    allElements.forEach(el => {
+        savedStyles.set(el, {
+            background: el.style.background,
+            backgroundColor: el.style.backgroundColor,
+            backgroundImage: el.style.backgroundImage,
+            boxShadow: el.style.boxShadow
+        });
+        
+        // Очищаем все фоновые стили
+        el.style.background = 'none';
+        el.style.backgroundColor = 'transparent';
+        el.style.backgroundImage = 'none';
+        el.style.boxShadow = 'none';
+    });
     
-    // Используем html2canvas для конвертации OMR бланка в изображение
+    // Используем html2canvas с настройками прозрачности
     html2canvas(omrSheet, {
-        backgroundColor: null, // Прозрачный фон
-        scale: 2, // Увеличиваем качество
+        backgroundColor: null,
+        scale: 2,
         useCORS: true,
         logging: false,
         onclone: function(clonedDoc) {
-            // Устанавливаем белый фон для клонированного элемента
             const clonedSheet = clonedDoc.getElementById('omr-sheet');
-            clonedSheet.style.background = 'transparent';
+            clonedSheet.classList.add('transparent-mode');
+            
+            // Очищаем фоны у всех элементов в клоне
+            const clonedElements = clonedSheet.querySelectorAll('*');
+            clonedElements.forEach(el => {
+                el.style.background = 'none';
+                el.style.backgroundColor = 'transparent';
+                el.style.backgroundImage = 'none';
+                el.style.boxShadow = 'none';
+            });
         }
     }).then(function(canvas) {
         // Создаем ссылку для скачивания
@@ -218,6 +274,23 @@ function saveAsPNG() {
         link.download = 'omr_sheet.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
+        
+        // Восстанавливаем стили
+        allElements.forEach(el => {
+            const styles = savedStyles.get(el);
+            if (styles) {
+                el.style.background = styles.background;
+                el.style.backgroundColor = styles.backgroundColor;
+                el.style.backgroundImage = styles.backgroundImage;
+                el.style.boxShadow = styles.boxShadow;
+            }
+        });
+        
+        // Удаляем класс прозрачного режима и восстанавливаем элементы перетаскивания
+        omrSheet.classList.remove('transparent-mode');
+        document.querySelectorAll('.drag-handle').forEach(handle => {
+            handle.style.display = '';
+        });
     });
 }
 
