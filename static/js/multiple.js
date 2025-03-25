@@ -1,17 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
     const socket = io();
-    const uploadZone = document.getElementById('upload-zone');
-    const fileInput = document.getElementById('file-input');
-    const previewGrid = document.getElementById('preview-grid');
-    const startProcessing = document.getElementById('start-processing');
-    const resultsList = document.getElementById('results-list');
-    const resetButton = document.getElementById('reset-all');
-    const questionsInput = document.getElementById('questions');
-    const choicesInput = document.getElementById('choices');
-    const strictModeCheckbox = document.getElementById('strict-mode');
+    
+    // Получаем все необходимые элементы DOM
+    const elements = {
+        uploadZone: document.getElementById('upload-zone'),
+        fileInput: document.getElementById('file-input'),
+        previewGrid: document.getElementById('preview-grid'),
+        startProcessing: document.getElementById('start-processing'),
+        resultsList: document.getElementById('results-list'),
+        resetButton: document.getElementById('reset-all'),
+        questionsInput: document.getElementById('questions'),
+        choicesInput: document.getElementById('choices'),
+        strictModeCheckbox: document.getElementById('strict-mode'),
+        displayModeSelect: document.getElementById('display-mode'),
+        correctAnswersGrid: document.getElementById('correct-answers-grid')
+    };
+
+    // Проверяем наличие всех необходимых элементов
+    for (const [key, element] of Object.entries(elements)) {
+        if (!element) {
+            console.error(`Element not found: ${key}`);
+            return; // Прерываем выполнение если отсутствует важный элемент
+        }
+    }
     
     let uploadedFiles = [];
     let processingInProgress = false;
+    let isTwoColumnsMode = elements.displayModeSelect.value === 'double';
 
     const modalOverlay = document.createElement('div');
     modalOverlay.className = 'modal-overlay';
@@ -38,22 +53,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetAll() {
         uploadedFiles = [];
-        previewGrid.innerHTML = '';
-        resultsList.innerHTML = '';
-        startProcessing.disabled = true;
-        fileInput.value = '';
+        elements.previewGrid.innerHTML = '';
+        elements.resultsList.innerHTML = '';
+        elements.startProcessing.disabled = true;
+        elements.fileInput.value = '';
         processingInProgress = false;
         createAnswersGrid();
     }
 
-    resetButton.addEventListener('click', resetAll);
+    elements.resetButton.addEventListener('click', resetAll);
 
     function createAnswersGrid() {
-        const questions = parseInt(questionsInput.value) || 5;
-        const choices = parseInt(choicesInput.value) || 5;
-        const grid = document.getElementById('correct-answers-grid');
+        const questions = parseInt(elements.questionsInput.value) || 5;
+        const choices = parseInt(elements.choicesInput.value) || 5;
+        const grid = elements.correctAnswersGrid;
         
         grid.innerHTML = '';
+        grid.style.display = 'flex';
+        grid.style.gap = '20px';
+        grid.style.justifyContent = 'center';
+        
+        // Создаем контейнеры для столбцов
+        const firstContainer = document.createElement('div');
+        firstContainer.className = 'answers-column';
+        grid.appendChild(firstContainer);
+        
+        let secondContainer = null;
+        if (isTwoColumnsMode) {
+            secondContainer = document.createElement('div');
+            secondContainer.className = 'answers-column';
+            grid.appendChild(secondContainer);
+        }
+        
+        const half = Math.ceil(questions / 2);
         
         for (let i = 0; i < questions; i++) {
             const questionDiv = document.createElement('div');
@@ -78,9 +110,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             questionDiv.appendChild(answersRow);
-            grid.appendChild(questionDiv);
+            
+            if (isTwoColumnsMode) {
+                if (i < half) {
+                    firstContainer.appendChild(questionDiv);
+                } else {
+                    secondContainer.appendChild(questionDiv);
+                }
+            } else {
+                firstContainer.appendChild(questionDiv);
+            }
         }
     }
+
+    // Обработчики событий
+    elements.displayModeSelect.addEventListener('change', function() {
+        isTwoColumnsMode = this.value === 'double';
+        createAnswersGrid();
+    });
+
+    elements.questionsInput.addEventListener('input', createAnswersGrid);
+    elements.choicesInput.addEventListener('input', createAnswersGrid);
+
+    // Создаем сетку при загрузке страницы
+    createAnswersGrid();
 
     function handleFiles(files) {
         if (processingInProgress) return;
@@ -108,64 +161,65 @@ document.addEventListener('DOMContentLoaded', () => {
                         <i class="fas fa-times"></i>
                     </button>
                 `;
-                previewGrid.appendChild(previewItem);
+                elements.previewGrid.appendChild(previewItem);
 
-                startProcessing.disabled = uploadedFiles.length === 0;
+                elements.startProcessing.disabled = uploadedFiles.length === 0;
             };
 
             reader.readAsDataURL(file);
         });
     }
 
-    uploadZone.addEventListener('click', () => {
+    elements.uploadZone.addEventListener('click', () => {
         if (!processingInProgress) {
-            fileInput.click();
+            elements.fileInput.click();
         }
     });
 
-    fileInput.addEventListener('change', (e) => {
+    elements.fileInput.addEventListener('change', (e) => {
         handleFiles(e.target.files);
     });
 
-    uploadZone.addEventListener('dragover', (e) => {
+    elements.uploadZone.addEventListener('dragover', (e) => {
         e.preventDefault();
         e.stopPropagation();
         if (!processingInProgress) {
-            uploadZone.classList.add('drag-over');
+            elements.uploadZone.classList.add('drag-over');
         }
     });
 
-    uploadZone.addEventListener('dragleave', (e) => {
+    elements.uploadZone.addEventListener('dragleave', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        uploadZone.classList.remove('drag-over');
+        elements.uploadZone.classList.remove('drag-over');
     });
 
-    uploadZone.addEventListener('drop', (e) => {
+    elements.uploadZone.addEventListener('drop', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        uploadZone.classList.remove('drag-over');
+        elements.uploadZone.classList.remove('drag-over');
         if (!processingInProgress) {
             handleFiles(e.dataTransfer.files);
         }
     });
 
-    previewGrid.addEventListener('click', (e) => {
+    elements.previewGrid.addEventListener('click', (e) => {
         if (e.target.closest('.remove-button') && !processingInProgress) {
             const id = e.target.closest('.remove-button').dataset.id;
             const element = document.getElementById(id);
             element.remove();
             uploadedFiles = uploadedFiles.filter(file => file.id !== id);
-            startProcessing.disabled = uploadedFiles.length === 0;
+            elements.startProcessing.disabled = uploadedFiles.length === 0;
         }
     });
 
-    startProcessing.addEventListener('click', () => {
+    elements.startProcessing.addEventListener('click', () => {
         if (processingInProgress) return;
 
-        const questions = parseInt(questionsInput.value) || 5;
-        const choices = parseInt(choicesInput.value) || 5;
-        const strictMode = strictModeCheckbox.checked;
+        const questions = parseInt(elements.questionsInput.value) || 5;
+        const choices = parseInt(elements.choicesInput.value) || 5;
+        const strictMode = elements.strictModeCheckbox.checked;
+        const displayMode = elements.displayModeSelect.value;
         
         // Собираем правильные ответы
         const correctAnswers = [];
@@ -180,8 +234,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         processingInProgress = true;
-        startProcessing.disabled = true;
-        resultsList.innerHTML = '';
+        elements.startProcessing.disabled = true;
+        elements.resultsList.innerHTML = '';
 
         uploadedFiles.forEach(file => {
             socket.emit('process_multiple', {
@@ -190,7 +244,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 questions: questions,
                 choices: choices,
                 correctAnswers: correctAnswers,
-                strictMode: strictMode
+                strictMode: strictMode,
+                displayMode: displayMode
             });
         });
     });
@@ -256,11 +311,11 @@ document.addEventListener('DOMContentLoaded', () => {
             sendToReportButton.classList.add('sent');
         });
 
-        resultsList.appendChild(resultItem);
+        elements.resultsList.appendChild(resultItem);
         
-        if (resultsList.children.length === uploadedFiles.length) {
+        if (elements.resultsList.children.length === uploadedFiles.length) {
             processingInProgress = false;
-            startProcessing.disabled = false;
+            elements.startProcessing.disabled = false;
         }
     });
 
@@ -281,13 +336,6 @@ document.addEventListener('DOMContentLoaded', () => {
     socket.on('error', (data) => {
         alert(data.message);
         processingInProgress = false;
-        startProcessing.disabled = false;
+        elements.startProcessing.disabled = false;
     });
-
-    // Обработчики изменения количества вопросов и вариантов ответов
-    questionsInput.addEventListener('change', createAnswersGrid);
-    choicesInput.addEventListener('change', createAnswersGrid);
-
-    // Инициализация сетки ответов при загрузке страницы
-    createAnswersGrid();
 }); 
