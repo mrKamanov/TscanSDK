@@ -6,11 +6,16 @@ import threading
 from video_processing import process_video_frame
 import numpy as np
 import json
-from multiple_processing import process_multiple_choice
+from multiple_processing import process_multiple_choice, MultipleProcessor
+from multiple_columns_processor import MultipleColumnsProcessor
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode='threading')
+
+# Инициализация процессоров
+multiple_processor = MultipleProcessor()
+multiple_columns_processor = MultipleColumnsProcessor()
 
 # Значения по умолчанию
 questions = 1
@@ -447,41 +452,35 @@ def handle_batch_image(data):
 @socketio.on('process_multiple')
 def handle_multiple_processing(data):
     try:
-        # Декодируем изображение из base64
+        # Декодируем изображение
         image_data = data['image'].split(',')[1]
         image_bytes = base64.b64decode(image_data)
         nparr = np.frombuffer(image_bytes, np.uint8)
-        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-        # Получаем параметры теста
-        questions = data['questions']
-        choices = data['choices']
-        correct_answers = data['correctAnswers']
-        strict_mode = data.get('strictMode', True)  
-        image_size = 800
+        # Получаем конфигурацию
+        config = {
+            'questions': data['questions'],
+            'choices': data['choices'],
+            'correct_answers': data['correctAnswers'],
+            'strict_mode': data.get('strictMode', False),  # По умолчанию нестрогий режим
+            'display_mode': data.get('displayMode', 'single')
+        }
 
-        # Обрабатываем изображение
-        result_img, correct_count, score, incorrect_questions, correct_questions = process_multiple_choice(
-            img, questions, choices, correct_answers, image_size, strict_mode=strict_mode
-        )
+        # Выбираем процессор в зависимости от режима отображения
+        if config['display_mode'] == 'double':
+            result = multiple_columns_processor.process_image(image, config)
+        else:
+            result = multiple_processor.process_image(image, config)
 
-        # Конвертируем результат в base64
-        _, buffer = cv2.imencode('.jpg', result_img)
-        processed_image = base64.b64encode(buffer).decode('utf-8')
-
+        # Добавляем ID к результату
+        result['id'] = data['id']
+        
         # Отправляем результат
-        emit('multiple_result', {
-            'processed_image': f'data:image/jpeg;base64,{processed_image}',
-            'correct_count': correct_count,
-            'questions': questions,
-            'score': score,
-            'correct_questions': correct_questions,
-            'incorrect_questions': incorrect_questions,
-            'strict_mode': strict_mode
-        })
+        emit('multiple_result', result)
 
     except Exception as e:
-        print(f"Ошибка обработки множественного выбора: {str(e)}")
+        print(f"Error processing image: {str(e)}")
         emit('error', {'message': str(e)})
 
 if __name__ == '__main__':

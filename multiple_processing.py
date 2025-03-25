@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
-from typing import List, Tuple, Dict, Optional
+import base64
+from typing import List, Tuple, Dict, Optional, Any
 
 def stackImages(imgArray: List[List[np.ndarray]], scale: float, labels: List[List[str]] = []) -> np.ndarray:
     rows = len(imgArray)
@@ -160,7 +161,10 @@ def showMultipleAnswers(img: np.ndarray, selected_answers: List[List[int]], corr
                        questions: int = 5, choices: int = 5) -> None:
     secW = img.shape[1] // choices
     secH = img.shape[0] // questions
-    cell_size = (secW, secH)
+    
+    # Определяем масштаб для маркеров (50% от размера ячейки)
+    marker_scale = 0.5
+    cell_size = (int(secW * marker_scale), int(secH * marker_scale))
     
     for x in range(questions):
         selected = set(selected_answers[x])
@@ -336,3 +340,228 @@ def process_multiple_choice(img: np.ndarray, questions: int, choices: int, corre
         
     except Exception as e:
         raise ValueError(f"Ошибка обработки изображения: {str(e)}") 
+
+class MultipleProcessor:
+    def __init__(self):
+        """
+        Инициализация процессора для обработки тестов с одним столбцом.
+        """
+        pass
+
+    def process_image(self, image: np.ndarray, config: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Обработка изображения теста с одним столбцом.
+        
+        Args:
+            image (np.ndarray): Входное изображение в формате OpenCV
+            config (Dict[str, Any]): Конфигурация теста
+                {
+                    'questions': int - количество вопросов,
+                    'choices': int - количество вариантов ответа,
+                    'correct_answers': List[List[int]] - правильные ответы,
+                    'strict_mode': bool - строгий режим проверки
+                }
+        
+        Returns:
+            Dict[str, Any]: Результаты обработки
+                {
+                    'processed_image': str - обработанное изображение в формате base64,
+                    'correct_count': float - количество правильных ответов,
+                    'questions': int - общее количество вопросов,
+                    'score': float - процент правильных ответов,
+                    'correct_questions': List[int] - номера правильных вопросов,
+                    'incorrect_questions': List[Dict] - детали неправильных ответов
+                }
+        """
+        # Получаем параметры
+        questions = config['questions']
+        choices = config['choices']
+        correct_answers = config['correct_answers']
+        strict_mode = config['strict_mode']
+        image_size = 800
+
+        try:
+            # Обрабатываем изображение существующей функцией
+            result_img, correct_count, score, incorrect_questions, correct_questions = process_multiple_choice(
+                image, questions, choices, correct_answers, image_size, strict_mode=strict_mode
+            )
+
+            # Создаем наложение на оригинальное изображение
+            overlay_image = self._create_overlay_image(
+                image,
+                result_img,  # Передаем перспективное изображение для получения матрицы трансформации
+                questions,
+                choices,
+                correct_answers,
+                incorrect_questions
+            )
+
+            # Определяем целевую высоту для обоих изображений
+            target_height = 800  # Фиксированная высота для комфортного просмотра
+            
+            # Масштабируем перспективное изображение
+            perspective_aspect_ratio = result_img.shape[1] / result_img.shape[0]
+            perspective_target_width = int(target_height * perspective_aspect_ratio)
+            result_image_resized = cv2.resize(result_img, (perspective_target_width, target_height))
+            
+            # Масштабируем оригинальное изображение
+            overlay_aspect_ratio = overlay_image.shape[1] / overlay_image.shape[0]
+            overlay_target_width = int(target_height * overlay_aspect_ratio)
+            overlay_image_resized = cv2.resize(overlay_image, (overlay_target_width, target_height))
+            
+            # Объединяем изображения
+            final_image = np.hstack((result_image_resized, overlay_image_resized))
+            
+            # Проверяем, не слишком ли широкое получилось изображение
+            max_width = 2000  # Максимальная допустимая ширина
+            if final_image.shape[1] > max_width:
+                # Если изображение слишком широкое, уменьшаем его, сохраняя пропорции
+                scale_factor = max_width / final_image.shape[1]
+                new_height = int(final_image.shape[0] * scale_factor)
+                final_image = cv2.resize(final_image, (max_width, new_height))
+
+            # Конвертируем результат в base64
+            _, buffer = cv2.imencode('.jpg', final_image)
+            processed_image = base64.b64encode(buffer).decode('utf-8')
+
+            # Формируем результат в нужном формате
+            return {
+                'processed_image': f'data:image/jpeg;base64,{processed_image}',
+                'correct_count': correct_count,
+                'questions': questions,
+                'score': score,
+                'correct_questions': correct_questions,
+                'incorrect_questions': incorrect_questions,
+                'strict_mode': strict_mode
+            }
+        except Exception as e:
+            print(f"Ошибка обработки изображения: {str(e)}")
+            return {
+                'error': str(e),
+                'processed_image': None,
+                'correct_count': 0,
+                'questions': 0,
+                'score': 0,
+                'correct_questions': [],
+                'incorrect_questions': [],
+                'strict_mode': strict_mode
+            }
+
+    def _create_overlay_image(self, original_image: np.ndarray, perspective_image: np.ndarray,
+                            questions: int, choices: int, correct_answers: List[List[int]],
+                            incorrect_questions: List[Dict]) -> np.ndarray:
+        """
+        Создает изображение с наложенными маркерами на оригинальное изображение.
+        """
+        try:
+            # Находим контур области с ответами на оригинальном изображении
+            gray = cv2.cvtColor(original_image, cv2.COLOR_BGR2GRAY)
+            blurred = cv2.GaussianBlur(gray, (5, 5), 1)
+            canny = cv2.Canny(blurred, 10, 70)
+            contours = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+            
+            # Находим самый большой прямоугольный контур
+            rect_contours = [cnt for cnt in contours 
+                           if len(cv2.approxPolyDP(cnt, 0.02 * cv2.arcLength(cnt, True), True)) == 4]
+            if not rect_contours:
+                raise ValueError("Не удалось найти область с ответами")
+            
+            biggest_contour = max(rect_contours, key=cv2.contourArea)
+            
+            # Получаем угловые точки
+            peri = cv2.arcLength(biggest_contour, True)
+            corners = cv2.approxPolyDP(biggest_contour, 0.02 * peri, True)
+            corners = reorder(corners)
+            
+            # Получаем размеры перспективного изображения
+            width = perspective_image.shape[1]
+            height = perspective_image.shape[0]
+            
+            # Создаем матрицы трансформации
+            pts1 = np.float32(corners)
+            pts2 = np.float32([[0, 0], [width, 0], [0, height], [width, height]])
+            matrix = cv2.getPerspectiveTransform(pts2, pts1)
+            
+            # Создаем копию оригинального изображения для наложения маркеров
+            result = original_image.copy()
+            
+            # Вычисляем размеры ячеек в перспективном изображении
+            cell_width = width / choices
+            cell_height = height / questions
+            
+            # Создаем тестовые точки для определения размера ячейки на оригинальном изображении
+            test_points = np.array([
+                [[0, 0]],  # Верхний левый угол первой ячейки
+                [[cell_width, cell_height]]  # Нижний правый угол первой ячейки
+            ], dtype=np.float32)
+            
+            # Преобразуем тестовые точки в координаты оригинального изображения
+            transformed_points = cv2.perspectiveTransform(test_points, matrix)
+            
+            # Вычисляем реальный размер ячейки на оригинальном изображении
+            real_width = abs(transformed_points[1][0][0] - transformed_points[0][0][0])
+            real_height = abs(transformed_points[1][0][1] - transformed_points[0][0][1])
+            
+            # Определяем масштаб для маркеров (50% от размера ячейки)
+            marker_scale = 0.5
+            scaled_cell_size = (int(real_width * marker_scale), int(real_height * marker_scale))
+            
+            # Создаем словарь ответов для быстрого доступа
+            incorrect_dict = {q['question_number']: q for q in incorrect_questions}
+            
+            # Для каждого вопроса
+            for q in range(questions):
+                q_num = q + 1
+                
+                # Определяем правильные ответы для этого вопроса
+                correct = set(correct_answers[q])
+                
+                # Если вопрос в списке неправильных, получаем выбранные ответы
+                if q_num in incorrect_dict:
+                    selected = set(x - 1 for x in incorrect_dict[q_num]['selected_answers'])
+                    partial_score = incorrect_dict[q_num]['partial_score']
+                else:
+                    selected = correct
+                    partial_score = 1.0
+                
+                # Для каждого варианта ответа
+                for c in range(choices):
+                    # Вычисляем координаты центра ячейки в перспективе
+                    src_x = (c + 0.5) * cell_width
+                    src_y = (q + 0.5) * cell_height
+                    
+                    # Преобразуем координаты обратно в оригинальное изображение
+                    point = cv2.perspectiveTransform(
+                        np.array([[[src_x, src_y]]], dtype=np.float32),
+                        matrix
+                    )[0][0]
+                    
+                    # Определяем тип маркера
+                    if c in selected:
+                        if c in correct:
+                            if selected == correct:
+                                mark_type = 'correct'
+                            else:
+                                mark_type = 'partial'
+                        else:
+                            mark_type = 'incorrect'
+                    else:
+                        if c in correct:
+                            mark_type = 'missed'
+                        else:
+                            mark_type = 'unselected'
+                    
+                    # Рисуем маркер с масштабированным размером
+                    if mark_type != 'unselected':
+                        draw_multiple_marks(
+                            result,
+                            (int(point[0]), int(point[1])),
+                            mark_type,
+                            scaled_cell_size  # Используем масштабированный размер
+                        )
+            
+            return result
+            
+        except Exception as e:
+            print(f"Ошибка при создании наложения: {str(e)}")
+            return original_image.copy() 
