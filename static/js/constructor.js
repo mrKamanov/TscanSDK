@@ -47,10 +47,8 @@ function applyBubbleStyles() {
     const borderPadding = borderPaddingInput.value;
     const borderWidth = borderWidthInput.value;
     
-    bubblesContainer.style.setProperty('--bubble-size', `${bubbleSize}px`);
-    bubblesContainer.style.setProperty('--bubble-spacing', `${bubbleSpacing}px`);
-    bubblesContainer.style.setProperty('--border-padding', `${borderPadding}px`);
-    bubblesContainer.style.setProperty('--border-width', `${borderWidth}px`);
+    // Пересоздаем кружки с новыми размерами
+    createBubbles();
 }
 
 // Функция генерации OMR-листа
@@ -530,14 +528,19 @@ function createBubbles() {
             bubble.className = 'bubble';
             bubble.style.width = `${bubbleSizeInput.value}px`;
             bubble.style.height = `${bubbleSizeInput.value}px`;
-            bubble.style.border = '2px solid #000000';
+            bubble.style.border = `2px solid #000000`;
             bubble.style.background = '#ffffff';
             bubble.style.display = 'flex';
             bubble.style.alignItems = 'center';
             bubble.style.justifyContent = 'center';
-            bubble.style.fontSize = '12px';
+            bubble.style.fontSize = `${parseInt(bubbleSizeInput.value) * 0.4}px`;
             bubble.style.color = '#000000';
             bubble.textContent = `${i + 1}.${j + 1}`;
+            
+            // Добавляем обработчик клика для скрытия кружка
+            bubble.addEventListener('click', function() {
+                this.style.display = 'none';
+            });
             
             bubblesWrapper.appendChild(bubble);
         }
