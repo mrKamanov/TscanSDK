@@ -1,4 +1,3 @@
-
 body {
     padding-top: 60px;
     background: var(--background-color);
@@ -239,15 +238,73 @@ body {
 
 .bubbles-container {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--bubble-block-spacing, 20px);
-    padding: var(--border-padding, 10px);
-    border: var(--border-width, 4px) solid #000000;
-    border-radius: var(--border-radius);
+    gap: var(--column-spacing, 50px);
     margin: 0;
     box-sizing: border-box;
     width: fit-content;
+    background: #ffffff;
+}
+
+.questions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 200px;
+    background: #ffffff;
+    border-radius: 0;
+}
+
+.question-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 0;
+}
+
+.question-row span {
+    font-weight: 500;
+    color: #000000;
+    min-width: 25px;
+}
+
+.bubbles-wrapper {
+    display: flex;
+    gap: var(--bubble-spacing, 10px);
+    align-items: center;
+}
+
+.bubble {
+    width: var(--bubble-size, 30px);
+    height: var(--bubble-size, 30px);
+    border: 2px solid #000000;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #000000;
+}
+
+.bubble:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.option-letter {
+    font-size: 12px;
+    color: #000;
+    font-weight: 500;
+    user-select: none;
+}
+
+/* Стили для режима двух столбцов */
+.bubbles-container.two-columns {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--column-spacing, 50px);
+    flex-wrap: nowrap;
 }
 
 .bubble-block {
@@ -568,6 +625,28 @@ input[type="range"]::-webkit-slider-thumb:hover {
     .action-buttons {
         display: none;
     }
+
+    .bubbles-container {
+        background: #ffffff !important;
+    }
+
+    .questions-container {
+        border: var(--border-width, 4px) solid #000000 !important;
+        background: #ffffff !important;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .bubble {
+        border: 2px solid #000000 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .option-letter {
+        color: #000 !important;
+        -webkit-print-color-adjust: exact;
+    }
 }
 
 @media (max-width: 768px) {
@@ -588,4 +667,95 @@ input[type="range"]::-webkit-slider-thumb:hover {
         width: 100%;
         min-width: 8.5in;
     }
+}
+
+.two-columns-settings {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--background-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+.two-columns-settings select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--background-color);
+    color: var(--text-color);
+}
+
+#column-spacing-control {
+    margin-top: 12px;
+}
+
+#column-spacing-control input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--background-color);
+    color: var(--text-color);
+}
+
+#align-columns {
+    width: 100%;
+    padding: 8px;
+    background: var(--secondary-color);
+    color: var(--text-color-inverse);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s ease;
+}
+
+#align-columns:hover {
+    background: var(--secondary-color-hover);
+}
+
+.questions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    background: var(--background-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+.question-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.question-row span {
+    min-width: 24px;
+    color: var(--text-color);
+}
+
+.bubble {
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.bubble:hover {
+    border-color: var(--secondary-color);
+    background: var(--secondary-color-light);
+}
+
+.bubble.selected {
+    background: var(--secondary-color);
+    border-color: var(--secondary-color);
 } 

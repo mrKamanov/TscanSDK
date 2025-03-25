@@ -60,6 +60,20 @@
                         <input type="number" id="num-questions" value="5" min="1" max="35">
                         <label for="num-options">Количество вариантов ответов:</label>
                         <input type="number" id="num-options" value="5" min="1" max="10">
+                        <div class="two-columns-settings">
+                            <label for="display-mode">Режим отображения:</label>
+                            <select id="display-mode">
+                                <option value="single">Один столбец</option>
+                                <option value="double">Два столбца</option>
+                            </select>
+                            <div id="column-spacing-control" style="display: none;">
+                                <label for="column-spacing">Расстояние между столбцами (px):</label>
+                                <input type="number" id="column-spacing" value="50" min="20" max="200">
+                                <button type="button" id="align-columns" class="btn btn-secondary">
+                                    <i class="fas fa-align-center"></i> Выровнять столбцы
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="settings-group">

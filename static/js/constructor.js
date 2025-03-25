@@ -1,4 +1,3 @@
-
 const omrSheet = document.getElementById('omr-sheet');
 const bubblesContainer = document.getElementById('bubbles-container');
 const numQuestionsInput = document.getElementById('num-questions');
@@ -32,6 +31,14 @@ let scale = 1;
 let offsetX = 0;
 let offsetY = 0;
 let animationFrameId;
+
+const displayModeSelect = document.getElementById('display-mode');
+const columnSpacingControl = document.getElementById('column-spacing-control');
+const columnSpacingInput = document.getElementById('column-spacing');
+const alignColumnsButton = document.getElementById('align-columns');
+
+let secondContainer = null;
+let isTwoColumnsMode = false;
 
 // Функция применения размеров и отступов
 function applyBubbleStyles() {
@@ -381,7 +388,7 @@ const initialNumQuestions = parseInt(numQuestionsInput.value) || 5;
 const initialNumOptions = parseInt(numOptionsInput.value) || 5;
 const initialFontSize = parseInt(fontSizeInput.value) || 16;
 omrSheet.style.fontSize = `${initialFontSize}px`;
-generateOmrSheet(initialNumQuestions, initialNumOptions);
+createBubbles();
 
 // Добавляем обработчики для кнопок сохранения
 document.getElementById('save-pdf').addEventListener('click', saveAsPDF);
@@ -392,4 +399,191 @@ document.getElementById('save-png').addEventListener('click', saveAsPNG);
 bubbleSizeInput.addEventListener('input', applyBubbleStyles);
 bubbleSpacingInput.addEventListener('input', applyBubbleStyles);
 borderPaddingInput.addEventListener('input', applyBubbleStyles);
-borderWidthInput.addEventListener('input', applyBubbleStyles); 
+borderWidthInput.addEventListener('input', applyBubbleStyles);
+
+// Функция для создания контейнера с вопросами
+function createQuestionsContainer() {
+    const container = document.createElement('div');
+    container.className = 'questions-container';
+    container.style.position = 'relative';
+    container.style.width = 'fit-content';
+    return container;
+}
+
+// Функция для создания второго контейнера
+function createSecondContainer() {
+    if (secondContainer) {
+        secondContainer.remove();
+    }
+    secondContainer = createQuestionsContainer();
+    secondContainer.style.marginLeft = `${columnSpacingInput.value}px`;
+    bubblesContainer.appendChild(secondContainer);
+    return secondContainer;
+}
+
+// Функция для распределения вопросов между столбцами
+function distributeQuestions() {
+    const questions = Array.from(bubblesContainer.querySelectorAll('.question-row'));
+    const half = Math.ceil(questions.length / 2);
+    
+    // Очищаем контейнеры
+    bubblesContainer.innerHTML = '';
+    if (isTwoColumnsMode) {
+        secondContainer = createSecondContainer();
+    }
+    
+    // Распределяем вопросы
+    questions.forEach((question, index) => {
+        if (isTwoColumnsMode) {
+            if (index < half) {
+                bubblesContainer.appendChild(question);
+            } else {
+                secondContainer.appendChild(question);
+            }
+        } else {
+            bubblesContainer.appendChild(question);
+        }
+    });
+}
+
+// Функция для выравнивания столбцов
+function alignColumns() {
+    if (!isTwoColumnsMode || !secondContainer) return;
+    
+    const firstContainer = bubblesContainer;
+    const firstRect = firstContainer.getBoundingClientRect();
+    
+    // Выравниваем по горизонтали
+    secondContainer.style.top = `${firstRect.top}px`;
+    secondContainer.style.left = `${firstRect.right + parseInt(columnSpacingInput.value)}px`;
+}
+
+// Обработчик изменения режима отображения
+displayModeSelect.addEventListener('change', function() {
+    isTwoColumnsMode = this.value === 'double';
+    columnSpacingControl.style.display = isTwoColumnsMode ? 'block' : 'none';
+    
+    if (isTwoColumnsMode) {
+        createSecondContainer();
+    } else if (secondContainer) {
+        secondContainer.remove();
+        secondContainer = null;
+    }
+    
+    distributeQuestions();
+});
+
+// Обработчик изменения расстояния между столбцами
+columnSpacingInput.addEventListener('input', function() {
+    if (isTwoColumnsMode && secondContainer) {
+        secondContainer.style.marginLeft = `${this.value}px`;
+        alignColumns();
+    }
+});
+
+// Обработчик кнопки выравнивания столбцов
+alignColumnsButton.addEventListener('click', alignColumns);
+
+// Модифицируем существующую функцию createBubbles
+function createBubbles() {
+    const numQuestions = parseInt(numQuestionsInput.value);
+    const numOptions = parseInt(numOptionsInput.value);
+    
+    bubblesContainer.innerHTML = '';
+    bubblesContainer.style.border = 'none';
+    bubblesContainer.style.padding = '0';
+    bubblesContainer.style.display = 'flex';
+    bubblesContainer.style.gap = `${columnSpacingInput.value}px`;
+    
+    // Создаем первый контейнер
+    const firstContainer = document.createElement('div');
+    firstContainer.className = 'questions-container';
+    firstContainer.style.border = `${borderWidthInput.value}px solid #000000`;
+    firstContainer.style.padding = `${borderPaddingInput.value}px`;
+    firstContainer.style.background = 'transparent';
+    bubblesContainer.appendChild(firstContainer);
+    
+    // Создаем второй контейнер если нужно
+    let secondContainer = null;
+    if (isTwoColumnsMode) {
+        secondContainer = document.createElement('div');
+        secondContainer.className = 'questions-container';
+        secondContainer.style.border = `${borderWidthInput.value}px solid #000000`;
+        secondContainer.style.padding = `${borderPaddingInput.value}px`;
+        secondContainer.style.background = 'transparent';
+        bubblesContainer.appendChild(secondContainer);
+    }
+    
+    const half = Math.ceil(numQuestions / 2);
+    
+    for (let i = 0; i < numQuestions; i++) {
+        const questionRow = document.createElement('div');
+        questionRow.className = 'question-row';
+        
+        const bubblesWrapper = document.createElement('div');
+        bubblesWrapper.className = 'bubbles-wrapper';
+        bubblesWrapper.style.display = 'flex';
+        bubblesWrapper.style.gap = `${bubbleSpacingInput.value}px`;
+        
+        for (let j = 0; j < numOptions; j++) {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.style.width = `${bubbleSizeInput.value}px`;
+            bubble.style.height = `${bubbleSizeInput.value}px`;
+            bubble.style.border = '2px solid #000000';
+            bubble.style.background = '#ffffff';
+            bubble.style.display = 'flex';
+            bubble.style.alignItems = 'center';
+            bubble.style.justifyContent = 'center';
+            bubble.style.fontSize = '12px';
+            bubble.style.color = '#000000';
+            bubble.textContent = `${i + 1}.${j + 1}`;
+            
+            bubblesWrapper.appendChild(bubble);
+        }
+        
+        questionRow.appendChild(bubblesWrapper);
+        
+        if (isTwoColumnsMode) {
+            if (i < half) {
+                firstContainer.appendChild(questionRow);
+            } else {
+                secondContainer.appendChild(questionRow);
+            }
+        } else {
+            firstContainer.appendChild(questionRow);
+        }
+    }
+}
+
+// Обновляем стили для контейнеров
+function updateContainerStyles() {
+    const containers = bubblesContainer.querySelectorAll('.questions-container');
+    containers.forEach(container => {
+        container.style.border = `${borderWidthInput.value}px solid #000000`;
+        container.style.padding = `${borderPaddingInput.value}px`;
+        container.style.background = 'transparent';
+    });
+}
+
+// Добавляем обработчик для обновления стилей при изменении режима
+displayModeSelect.addEventListener('change', function() {
+    isTwoColumnsMode = this.value === 'double';
+    columnSpacingControl.style.display = isTwoColumnsMode ? 'block' : 'none';
+    updateContainerStyles();
+    createBubbles();
+});
+
+// Обновляем обработчик изменения расстояния между столбцами
+columnSpacingInput.addEventListener('input', function() {
+    if (isTwoColumnsMode) {
+        bubblesContainer.style.gap = `${this.value}px`;
+        createBubbles();
+    }
+});
+
+// Модифицируем обработчик формы
+omrSettingsForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    createBubbles();
+}); 
