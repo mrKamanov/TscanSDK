@@ -891,6 +891,209 @@
                 font-size: 0.9em;
             }
         }
+
+        .navigation-box {
+            background: linear-gradient(135deg, rgba(94, 129, 172, 0.1), rgba(136, 192, 208, 0.1));
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 24px 0;
+            border: 1px solid rgba(136, 192, 208, 0.2);
+        }
+
+        .navigation-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(136, 192, 208, 0.2);
+        }
+
+        .navigation-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            transform: translateX(8px);
+            background: rgba(94, 129, 172, 0.2);
+            color: var(--secondary-color);
+        }
+
+        .nav-item i {
+            font-size: 1.2em;
+            color: var(--secondary-color);
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-item span {
+            font-size: 1em;
+        }
+
+        @media screen and (max-width: 768px) {
+            .navigation-box {
+                padding: 16px;
+                margin: 16px 0;
+            }
+
+            .navigation-title {
+                font-size: 1.1em;
+                margin-bottom: 12px;
+                padding-bottom: 8px;
+            }
+
+            .navigation-content {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .nav-item {
+                padding: 10px;
+            }
+
+            .nav-item i {
+                font-size: 1.1em;
+                width: 20px;
+            }
+
+            .nav-item span {
+                font-size: 0.9em;
+            }
+        }
+
+        @media screen and (max-width: 360px) {
+            .instructions-container {
+                padding: 4px;
+            }
+
+            .instructions-section {
+                padding: 8px;
+            }
+
+            .instructions-section h2 {
+                font-size: 1.1em;
+            }
+
+            .button-example {
+                padding: 6px 12px;
+                font-size: 0.9em;
+            }
+
+            .control-item {
+                padding: 8px;
+            }
+
+            .tip-box {
+                padding: 8px;
+            }
+
+            .step {
+                padding: 8px;
+            }
+
+            .criteria-table th,
+            .criteria-table td {
+                padding: 6px;
+                font-size: 0.85em;
+            }
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 50%;
+            color: var(--text-color-inverse);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .scroll-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        @media screen and (max-width: 768px) {
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+
+        @media screen and (max-width: 360px) {
+            .instructions-container {
+                padding: 4px;
+            }
+
+            .instructions-section {
+                padding: 8px;
+            }
+
+            .instructions-section h2 {
+                font-size: 1.1em;
+            }
+
+            .button-example {
+                padding: 6px 12px;
+                font-size: 0.9em;
+            }
+
+            .control-item {
+                padding: 8px;
+            }
+
+            .tip-box {
+                padding: 8px;
+            }
+
+            .step {
+                padding: 8px;
+            }
+
+            .criteria-table th,
+            .criteria-table td {
+                padding: 6px;
+                font-size: 0.85em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -931,11 +1134,43 @@
             <div class="instructions-container">
                 <div class="instructions-section">
                     <h2><i class="fas fa-info-circle"></i> Общая информация</h2>
+                    <div class="navigation-box">
+                        <div class="navigation-title">
+                            <i class="fas fa-list"></i>
+                            <span>Оглавление</span>
+                        </div>
+                        <div class="navigation-content">
+                            <a href="#realtime-scanning" class="nav-item">
+                                <i class="fas fa-camera"></i>
+                                <span>Сканирование в реальном времени</span>
+                            </a>
+                            <a href="#batch-processing" class="nav-item">
+                                <i class="fas fa-images"></i>
+                                <span>Пакетная обработка</span>
+                            </a>
+                            <a href="#multiple-choice" class="nav-item">
+                                <i class="fas fa-tasks"></i>
+                                <span>Множественный выбор</span>
+                            </a>
+                            <a href="#constructor" class="nav-item">
+                                <i class="fas fa-edit"></i>
+                                <span>Конструктор тестов</span>
+                            </a>
+                            <a href="#reports" class="nav-item">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Работа с отчётами</span>
+                            </a>
+                            <a href="#grading-criteria" class="nav-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>Настройка критериев оценивания</span>
+                            </a>
+                        </div>
+                    </div>
                     <p>Приложение предназначено для автоматической проверки тестовых работ. Система распознает отмеченные ответы и сравнивает их с правильными, формируя подробный отчет о результатах.</p>
                 </div>
 
                 <div class="instructions-section">
-                    <h2><i class="fas fa-camera"></i> Сканирование в реальном времени</h2>
+                    <h2 id="realtime-scanning"><i class="fas fa-camera"></i> Сканирование в реальном времени</h2>
                     
                     <h3><i class="fas fa-list"></i> Порядок работы:</h3>
                     <ol class="feature-list">
@@ -1064,7 +1299,7 @@
                 </div>
 
                 <div class="instruction-section" id="batch-processing">
-                    <h2><i class="fas fa-images"></i> Пакетная обработка</h2>
+                    <h2 id="batch-processing"><i class="fas fa-images"></i> Пакетная обработка</h2>
                     
                     <div class="info-box">
                         <div class="info-box-title">
@@ -1145,7 +1380,7 @@
                 </div>
 
                 <div class="instruction-section" id="multiple-choice">
-                    <h2><i class="fas fa-tasks"></i> Множественный выбор</h2>
+                    <h2 id="multiple-choice"><i class="fas fa-tasks"></i> Множественный выбор</h2>
                     
                     <div class="info-box">
                         <div class="info-box-title">
@@ -1207,7 +1442,45 @@
                         </div>
 
                         <div class="step">
-                            <h3><i class="fas fa-balance-scale"></i> 3. Режимы проверки</h3>
+                            <h3><i class="fas fa-save"></i> 3. Сохранение и загрузка критериев</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example primary">
+                                        <i class="fas fa-save"></i>
+                                        <span>Сохранить критерии</span>
+                                    </div>
+                                    <p>Сохранить настройки в JSON</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example secondary">
+                                        <i class="fas fa-upload"></i>
+                                        <span>Загрузить критерии</span>
+                                    </div>
+                                    <p>Загрузить из JSON файла</p>
+                                </div>
+                            </div>
+                            <div class="tip-box">
+                                <strong><i class="fas fa-lightbulb"></i> Совет</strong>
+                                <p>Сохраняйте критерии проверки в JSON файл для каждого варианта теста. Это позволит быстро переключаться между разными вариантами без необходимости заново отмечать правильные ответы.</p>
+                            </div>
+                            <div class="info-box">
+                                <div class="info-box-title">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Что сохраняется в файл</span>
+                                </div>
+                                <div class="info-box-content">
+                                    <ul class="feature-list">
+                                        <li>Количество вопросов и вариантов ответов</li>
+                                        <li>Режим отображения (один или два столбца)</li>
+                                        <li>Режим проверки (строгий или частичный)</li>
+                                        <li>Все отмеченные правильные ответы</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-balance-scale"></i> 4. Режимы проверки</h3>
                             <div class="controls-grid">
                                 <div class="control-item">
                                     <h4><i class="fas fa-check-circle"></i> Строгий режим</h4>
@@ -1225,7 +1498,7 @@
                         </div>
 
                         <div class="step">
-                            <h3><i class="fas fa-upload"></i> 4. Загрузка и обработка</h3>
+                            <h3><i class="fas fa-upload"></i> 5. Загрузка и обработка</h3>
                             <div class="button-grid">
                                 <div class="button-example-container">
                                     <div class="button-example primary">
@@ -1245,7 +1518,7 @@
                         </div>
 
                         <div class="step">
-                            <h3><i class="fas fa-chart-bar"></i> 5. Результаты проверки</h3>
+                            <h3><i class="fas fa-chart-bar"></i> 6. Результаты проверки</h3>
                             <div class="info-box">
                                 <div class="info-box-title">
                                     <i class="fas fa-info-circle"></i>
@@ -1291,7 +1564,7 @@
                 </div>
 
                 <div class="instruction-section" id="constructor">
-                    <h2><i class="fas fa-edit"></i> Конструктор тестов</h2>
+                    <h2 id="constructor"><i class="fas fa-edit"></i> Конструктор тестов</h2>
                     
                     <div class="info-box">
                         <div class="info-box-title">
@@ -1457,7 +1730,7 @@
                 </div>
 
                 <div class="instruction-section" id="reports">
-                    <h2><i class="fas fa-chart-bar"></i> Работа с отчётами</h2>
+                    <h2 id="reports"><i class="fas fa-chart-bar"></i> Работа с отчётами</h2>
 
                     <div class="info-box">
                         <div class="info-box-title">
@@ -1506,7 +1779,7 @@
                 </div>
 
                 <div class="instruction-section" id="grading-criteria">
-                    <h2><i class="fas fa-graduation-cap"></i> Настройка критериев оценивания</h2>
+                    <h2 id="grading-criteria"><i class="fas fa-graduation-cap"></i> Настройка критериев оценивания</h2>
 
                     <div class="info-box">
                         <div class="info-box-title">
@@ -1668,6 +1941,11 @@
         </main>
     </div>
 
+    <!-- Кнопка возврата наверх -->
+    <button id="scroll-to-top" class="scroll-to-top" title="Вернуться наверх">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const rows = document.querySelectorAll('.answer-table tr');
@@ -1688,6 +1966,26 @@
                         }
                     });
                 }
+            });
+        });
+
+        // Функционал кнопки возврата наверх
+        const scrollToTopButton = document.getElementById('scroll-to-top');
+
+        // Показать/скрыть кнопку при прокрутке
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollToTopButton.classList.add('show');
+            } else {
+                scrollToTopButton.classList.remove('show');
+            }
+        });
+
+        // Плавная прокрутка наверх при клике
+        scrollToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
         });
     </script>
