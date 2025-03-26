@@ -13,7 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
         choicesInput: document.getElementById('choices'),
         strictModeCheckbox: document.getElementById('strict-mode'),
         displayModeSelect: document.getElementById('display-mode'),
-        correctAnswersGrid: document.getElementById('correct-answers-grid')
+        correctAnswersGrid: document.getElementById('correct-answers-grid'),
+        saveCriteriaButton: document.getElementById('save-criteria'),
+        loadCriteriaButton: document.getElementById('load-criteria'),
+        criteriaFileInput: document.getElementById('criteria-file-input')
     };
 
     // Проверяем наличие всех необходимых элементов
@@ -337,5 +340,98 @@ document.addEventListener('DOMContentLoaded', () => {
         alert(data.message);
         processingInProgress = false;
         elements.startProcessing.disabled = false;
+    });
+
+    // Функция для получения текущих критериев
+    function getCurrentCriteria() {
+        const questions = parseInt(elements.questionsInput.value);
+        const choices = parseInt(elements.choicesInput.value);
+        const displayMode = elements.displayModeSelect.value;
+        const strictMode = elements.strictModeCheckbox.checked;
+        
+        // Получаем правильные ответы из сетки
+        const correctAnswers = [];
+        const checkboxes = elements.correctAnswersGrid.querySelectorAll('input[type="checkbox"]');
+        
+        for (let q = 0; q < questions; q++) {
+            const answers = [];
+            for (let c = 0; c < choices; c++) {
+                const checkbox = checkboxes[q * choices + c];
+                if (checkbox && checkbox.checked) {
+                    answers.push(parseInt(checkbox.value));
+                }
+            }
+            correctAnswers.push(answers);
+        }
+        
+        return {
+            questions,
+            choices,
+            displayMode,
+            strictMode,
+            correctAnswers
+        };
+    }
+
+    // Функция для установки критериев
+    function setCriteria(criteria) {
+        elements.questionsInput.value = criteria.questions;
+        elements.choicesInput.value = criteria.choices;
+        elements.displayModeSelect.value = criteria.displayMode;
+        elements.strictModeCheckbox.checked = criteria.strictMode;
+        
+        // Пересоздаем сетку с новыми параметрами
+        createAnswersGrid();
+        
+        // Устанавливаем правильные ответы
+        const checkboxes = elements.correctAnswersGrid.querySelectorAll('input[type="checkbox"]');
+        criteria.correctAnswers.forEach((answers, questionIndex) => {
+            answers.forEach(answer => {
+                const checkbox = checkboxes[questionIndex * criteria.choices + answer];
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
+        });
+    }
+
+    // Обработчик сохранения критериев
+    elements.saveCriteriaButton.addEventListener('click', () => {
+        const criteria = getCurrentCriteria();
+        const jsonString = JSON.stringify(criteria, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'test_criteria.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    // Обработчик загрузки критериев
+    elements.loadCriteriaButton.addEventListener('click', () => {
+        elements.criteriaFileInput.value = ''; // Сбрасываем значение перед открытием диалога
+        elements.criteriaFileInput.click();
+    });
+
+    elements.criteriaFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const criteria = JSON.parse(event.target.result);
+                    setCriteria(criteria);
+                } catch (error) {
+                    alert('Ошибка при чтении файла критериев. Убедитесь, что файл имеет правильный формат.');
+                }
+            };
+            reader.readAsText(file);
+            // Сбрасываем значение после загрузки
+            e.target.value = '';
+        }
     });
 }); 
