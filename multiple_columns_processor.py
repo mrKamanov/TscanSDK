@@ -226,7 +226,7 @@ class MultipleColumnsProcessor:
 
     def _preprocess_image(self, image: np.ndarray) -> np.ndarray:
         """
-        Предварительная обработка изображения.
+        Предварительная обработка изображения для улучшения качества распознавания.
         
         Args:
             image (np.ndarray): Исходное изображение
@@ -244,34 +244,21 @@ class MultipleColumnsProcessor:
                 kernel_size += 1
             blurred = cv2.GaussianBlur(gray, (kernel_size, kernel_size), 0)
             
-            # Применяем адаптивную бинаризацию с уменьшенным размером окна
-            block_size = max(3, min(gray.shape) // 150)  # Уменьшаем размер окна
-            if block_size % 2 == 0:
-                block_size += 1
-                
+            # Применяем адаптивную пороговую обработку
             binary = cv2.adaptiveThreshold(
                 blurred,
                 255,
                 cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                 cv2.THRESH_BINARY_INV,
-                block_size,
-                8  # Уменьшаем константу вычитания для лучшего выделения отметок
+                11,
+                2
             )
             
-            # Применяем морфологические операции для улучшения результата
-            kernel_size = max(2, min(gray.shape) // 500)  # Уменьшаем размер ядра
-            kernel = np.ones((kernel_size, kernel_size), np.uint8)
+            # Применяем морфологические операции для удаления шума
+            kernel = np.ones((2, 2), np.uint8)
+            binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
             
-            # Сначала закрываем (чтобы соединить близкие части)
-            morph = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
-            
-            # Затем открываем (чтобы убрать мелкий шум)
-            morph = cv2.morphologyEx(morph, cv2.MORPH_OPEN, kernel)
-            
-            # Дополнительная фильтрация шума с меньшим размером ядра
-            morph = cv2.medianBlur(morph, max(3, kernel_size))
-            
-            return morph
+            return binary
             
         except Exception as e:
             print(f"Ошибка при предварительной обработке изображения: {str(e)}")
@@ -661,7 +648,7 @@ class MultipleColumnsProcessor:
                 
                 # Проверяем случай, когда отмечено слишком много вариантов
                 # Но только если отмеченные ответы не совпадают с правильными
-                if selected_set != correct_set and len(detected) >= int(choices * 0.8):  
+                if selected_set != correct_set and len(detected) >= int(choices * 0.8):
                     incorrect_info = {
                         'question_number': i + 1,
                         'selected_answers': [x + 1 for x in sorted(detected)],
@@ -685,7 +672,7 @@ class MultipleColumnsProcessor:
                     }
                     incorrect_questions.append(incorrect_info)
                     continue
-                
+
                 # Подсчитываем количество правильных ответов
                 correct_selected = len(selected_set & correct_set)  # Пересечение множеств
                 total_correct = len(correct_set)
@@ -712,7 +699,7 @@ class MultipleColumnsProcessor:
                         base_message += f"\nПравильные варианты: {', '.join(str(x + 1) for x in sorted(correct))}"
                     else:
                         base_message += "\nПравильные варианты: нет"
-                        
+                    
                     if question_score > 0:
                         score_percent = int(question_score * 100)
                         message = f"{base_message}\n✓ Частично правильный ответ ({score_percent}%)"
