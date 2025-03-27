@@ -9,8 +9,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/qr.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         body {
             min-height: 100vh;
@@ -32,6 +34,11 @@
             align-items: center;
             justify-content: center;
             padding: 48px 24px;
+        }
+
+        .decorative-elements {
+            flex: 1;
+            background-color: var(--background-color);
         }
 
         .menu-container {
@@ -107,6 +114,41 @@
 <body>
     <div class="container">
         <main class="main-content">
+            <div class="decorative-elements">
+                <div class="decorative-letters">
+                    <span class="check">✓</span>
+                    <span class="circle-letter" data-letter="А"></span>
+                    <span class="circle-letter" data-letter="Б"></span>
+                    <span class="circle-letter" data-letter="В"></span>
+                    <span class="circle-letter" data-letter="Г"></span>
+                    <span class="circle-letter" data-letter="Д"></span>
+                    <span class="cross">✕</span>
+                </div>
+            </div>
+            
+            <!-- Верхняя правая группа -->
+            <div class="decorative-letters">
+                <span class="check">✓</span>
+                <span class="circle-letter" data-letter="1"></span>
+                <span class="circle-letter" data-letter="2"></span>
+                <span class="circle-letter" data-letter="3"></span>
+                <span class="cross">✕</span>
+            </div>
+
+            <!-- Верхняя левая группа -->
+            <div class="decorative-icons top-left">
+                <span class="icon">📝</span>
+                <span class="icon">✎</span>
+                <span class="icon">📋</span>
+            </div>
+
+            <!-- Нижняя правая группа -->
+            <div class="decorative-icons bottom-right">
+                <span class="icon">📚</span>
+                <span class="icon">🎓</span>
+                <span class="icon">✏️</span>
+            </div>
+
             <div class="menu-container">
                 <h1 class="main-title">
                     <i class="fas fa-graduation-cap"></i>
@@ -179,6 +221,19 @@
                         </div>
                     </a>
                 </div>
+
+                <div style="margin-top: 48px; display: flex; justify-content: center;">
+                    <div class="menu-card" id="qr-card" style="max-width: 300px; padding: 16px 24px; display: flex; align-items: center; gap: 16px; cursor: pointer; background: rgba(136, 192, 208, 0.1); border: 1px solid rgba(136, 192, 208, 0.2); transition: all 0.3s ease;">
+                        <div class="card-icon" style="margin: 0; padding: 12px; background: transparent;">
+                            <i class="fas fa-qrcode" style="color: var(--secondary-color);"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <h2 style="margin: 0 0 4px 0; font-size: 1.1em; color: var(--text-color);">Открыть на телефоне</h2>
+                            <p style="margin: 0; font-size: 0.9em; opacity: 0.7; color: var(--text-color);">Сгенерировать QR-код для доступа</p>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color: var(--secondary-color); opacity: 0.7; font-size: 1.2em;"></i>
+                    </div>
+                </div>
             </div>
         </main>
 
@@ -195,5 +250,82 @@
             </div>
         </footer>
     </div>
+
+    <!-- Модальное окно с QR-кодом -->
+    <div class="qr-modal" id="qr-modal">
+        <div class="qr-modal-content">
+            <div class="qr-modal-close" id="qr-modal-close">
+                <i class="fas fa-times"></i>
+            </div>
+            <h2 class="qr-modal-title">
+                <i class="fas fa-mobile-alt"></i>
+                Мобильный доступ
+            </h2>
+            <p class="qr-modal-text">
+                Отсканируйте QR-код камерой вашего мобильного устройства, чтобы открыть приложение. Убедитесь, что ваше устройство подключено к той же сети Wi-Fi.
+            </p>
+            <div class="qr-code-container" id="qr-code"></div>
+            <div class="qr-modal-url" id="qr-url"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const qrCard = document.getElementById('qr-card');
+            const qrModal = document.getElementById('qr-modal');
+            const qrModalClose = document.getElementById('qr-modal-close');
+            const qrCodeContainer = document.getElementById('qr-code');
+            const qrUrlElement = document.getElementById('qr-url');
+
+            // Функция для получения URL для мобильного доступа
+            async function getMobileUrl() {
+                try {
+                    const response = await fetch('/get_mobile_url');
+                    const data = await response.json();
+                    return data.url;
+                } catch (error) {
+                    console.error('Ошибка при получении URL:', error);
+                    return window.location.href;
+                }
+            }
+
+            // Открываем модальное окно при клике на карточку
+            qrCard.addEventListener('click', async function() {
+                // Получаем URL для мобильного доступа
+                const mobileUrl = await getMobileUrl();
+                
+                // Очищаем контейнер QR-кода
+                qrCodeContainer.innerHTML = '';
+                
+                // Создаем QR-код
+                new QRCode(qrCodeContainer, {
+                    text: mobileUrl,
+                    width: 256,
+                    height: 256,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+
+                // Отображаем URL
+                qrUrlElement.textContent = mobileUrl;
+                
+                // Показываем модальное окно
+                qrModal.style.display = 'flex';
+            });
+
+            // Закрываем модальное окно при клике на крестик
+            qrModalClose.addEventListener('click', function() {
+                qrModal.style.display = 'none';
+            });
+
+            // Закрываем модальное окно при клике вне его области
+            qrModal.addEventListener('click', function(e) {
+                if (e.target === qrModal) {
+                    qrModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html> 

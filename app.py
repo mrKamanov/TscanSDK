@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, send_file
 from flask_socketio import SocketIO, emit
+from flask_cors import CORS  # Добавляем поддержку CORS
 import cv2
 import base64
 import threading
@@ -8,10 +9,13 @@ import numpy as np
 import json
 from multiple_processing import process_multiple_choice, MultipleProcessor
 from multiple_columns_processor import MultipleColumnsProcessor
+import os
+import socket
 
 app = Flask(__name__)
+CORS(app)  # Включаем CORS для всех маршрутов
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, async_mode='threading')
+socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")  # Разрешаем все источники для Socket.IO
 
 # Инициализация процессоров
 multiple_processor = MultipleProcessor()
@@ -49,7 +53,7 @@ def start_camera():
     global cap, camera_thread
     try:
         if cap is None:
-            cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  # Добавляем CAP_DSHOW для Windows
+            cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  
             if not cap.isOpened():
                 print("Ошибка: Камера не найдена")
                 return False
@@ -463,7 +467,7 @@ def handle_multiple_processing(data):
             'questions': data['questions'],
             'choices': data['choices'],
             'correct_answers': data['correctAnswers'],
-            'strict_mode': data.get('strictMode', False),  # По умолчанию нестрогий режим
+            'strict_mode': data.get('strictMode', False), 
             'display_mode': data.get('displayMode', 'single')
         }
 
@@ -483,5 +487,32 @@ def handle_multiple_processing(data):
         print(f"Error processing image: {str(e)}")
         emit('error', {'message': str(e)})
 
+def get_local_ip():
+    try:
+        # Создаем временный сокет для определения основного сетевого интерфейса
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Подключаемся к публичному DNS-серверу Google (это соединение не устанавливается реально)
+        s.connect(('8.8.8.8', 80))
+        # Получаем локальный IP-адрес
+        local_ip = s.getsockname()[0]
+        s.close()
+        return local_ip
+    except Exception as e:
+        print(f"Ошибка при получении IP: {str(e)}")
+        return "localhost"
+
+@app.route('/get_mobile_url')
+def get_mobile_url():
+    ip = get_local_ip()
+    port = 5000  # Порт Flask по умолчанию
+    url = f"http://{ip}:{port}"
+    return jsonify({"url": url})
+
 if __name__ == '__main__':
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True)
+    # Получаем IP-адрес
+    ip = get_local_ip()
+    print(f"Server running at http://{ip}:5000")
+    
+    # Запускаем сервер
+    app.run(host='0.0.0.0', port=5000, debug=True)
+    # socketio.run(app, host='0.0.0.0', port=5000, debug=True, allow_unsafe_werkzeug=True)
