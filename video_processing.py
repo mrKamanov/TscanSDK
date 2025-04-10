@@ -1,6 +1,55 @@
+"""
+Модуль обработки видео для сканирования тестов
+
+Этот модуль предоставляет функциональность для обработки видео с тестами и их оценки.
+Основные возможности:
+- Обработка видео в реальном времени
+- Распознавание ответов на тесты
+- Оценка правильности ответов
+- Визуализация результатов с наложением на исходное видео
+
+Основные компоненты:
+1. Функции обработки изображений:
+   - stackImages: Объединение изображений в сетку
+   - reorder: Упорядочивание точек контура
+   - find_contours: Поиск контуров на изображении
+   - rectContour: Фильтрация прямоугольных контуров
+   - getCornerPoints: Получение угловых точек
+   - splitBoxes: Разделение изображения на ячейки
+   - drawGrid: Отрисовка сетки
+   - draw_answer_marks: Отрисовка отметок ответов
+   - showAnswers: Отображение правильных и неправильных ответов
+   - adjust_image: Настройка параметров изображения
+
+2. Основные функции обработки:
+   - process_video_frame: Обработка отдельного кадра видео
+   - VideoProcessor: Класс для обработки видео
+
+Типы маркеров:
+- Оранжевый (✓) - правильный ответ
+- Красный (×) - неправильный ответ
+- Зеленый (!) - пропущенный правильный ответ
+
+Формат входных данных:
+- Видеопоток: с веб-камеры или файла
+- Конфигурация: словарь с параметрами теста
+  - questions: количество вопросов
+  - choices: количество вариантов
+  - correct_answers: правильные ответы
+- Параметры обработки изображения (яркость, контраст, насыщенность, резкость)
+
+Результаты обработки:
+- Обработанное изображение с отметками
+- Количество правильных ответов
+- Процент правильных ответов
+- Список неправильных ответов
+- Массив оценок для каждого вопроса
+"""
+
 import cv2
 import numpy as np
-from typing import List, Tuple, Dict, Optional
+import base64
+from typing import List, Tuple, Dict, Optional, Any
 
 def stackImages(imgArray: List[List[np.ndarray]], scale: float, labels: List[List[str]] = []) -> np.ndarray:
     rows = len(imgArray)
@@ -259,3 +308,39 @@ def process_video_frame(img: np.ndarray, questions: int, choices: int, correct_a
     except Exception as e:
         print(f"Ошибка обработки кадра: {str(e)}")
         return img, 0, 0, [], []
+
+class VideoProcessor:
+    def __init__(self):
+        pass
+        
+    def process_video(self, video_source: int, config: Dict[str, Any]) -> Dict[str, Any]:
+        questions = config['questions']
+        choices = config['choices']
+        correct_answers = config['correct_answers']
+        image_size = 800
+        
+        cap = cv2.VideoCapture(video_source)
+        if not cap.isOpened():
+            return {"error": "Не удалось открыть видеопоток"}
+            
+        ret, frame = cap.read()
+        if not ret:
+            return {"error": "Не удалось получить кадр из видеопотока"}
+            
+        result_img, correct_count, score, incorrect_questions, grading = process_video_frame(
+            frame, questions, choices, correct_answers, image_size, overlay_mode=True
+        )
+        
+        cap.release()
+        
+        _, buffer = cv2.imencode('.jpg', result_img)
+        processed_image = base64.b64encode(buffer).decode('utf-8')
+        
+        return {
+            'processed_image': f'data:image/jpeg;base64,{processed_image}',
+            'correct_count': correct_count,
+            'questions': questions,
+            'score': score,
+            'incorrect_questions': incorrect_questions,
+            'grading': grading
+        }
