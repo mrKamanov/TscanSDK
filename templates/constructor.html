@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конструктор OMR-форм</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/constructor.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script>window.jsPDF = window.jspdf.jsPDF;</script>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="/" class="nav-link">
+            <i class="fas fa-home"></i>
+            <span>Главная</span>
+        </a>
+        <a href="/scan" class="nav-link">
+            <i class="fas fa-camera"></i>
+            <span>Сканирование</span>
+        </a>
+        <a href="/batch" class="nav-link">
+            <i class="fas fa-images"></i>
+            <span>Пакетная обработка</span>
+        </a>
+        <a href="/multiple" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>Множественный выбор</span>
+        </a>
+        <a href="/reports" class="nav-link">
+            <i class="fas fa-chart-bar"></i>
+            <span>Отчёты</span>
+        </a>
+        <a href="/instructions" class="nav-link">
+            <i class="fas fa-book"></i>
+            <span>Инструкция</span>
+        </a>
+        <a href="/constructor" class="nav-link active">
+            <i class="fas fa-edit"></i>
+            <span>Конструктор</span>
+        </a>
+    </nav>
+
+    <div class="container">
+        <div class="constructor-layout">
+
+            <div id="settings-form" class="bg-white rounded-lg shadow-md">
+                <h2><i class="fas fa-cog"></i> Настройки OMR-формы</h2>
+                <form id="omr-settings">
+                    <div class="settings-group">
+                        <h3><i class="fas fa-ruler"></i> Размеры и количество</h3>
+                        <label for="num-questions">Количество вопросов:</label>
+                        <input type="number" id="num-questions" value="5" min="1" max="35">
+                        <label for="num-options">Количество вариантов ответов:</label>
+                        <input type="number" id="num-options" value="5" min="1" max="10">
+                        <div class="two-columns-settings">
+                            <label for="display-mode">Режим отображения:</label>
+                            <select id="display-mode">
+                                <option value="single">Один столбец</option>
+                                <option value="double">Два столбца</option>
+                            </select>
+                            <div id="column-spacing-control" style="display: none;">
+                                <label for="column-spacing">Расстояние между столбцами (px):</label>
+                                <input type="number" id="column-spacing" value="50" min="20" max="200">
+                                <button type="button" id="align-columns" class="btn btn-secondary">
+                                    <i class="fas fa-align-center"></i> Выровнять столбцы
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3><i class="fas fa-font"></i> Текстовые элементы</h3>
+                        <label for="sheet-title">Заголовок листа:</label>
+                        <input type="text" id="sheet-title" value="">
+                        <label for="sheet-description">Описание:</label>
+                        <input type="text" id="sheet-description" value="">
+                        <label for="student-name">ФИО:</label>
+                        <input type="text" id="student-name" value="">
+                        <label for="date">Дата:</label>
+                        <input type="text" id="date" value="">
+                        <label for="subject">Предмет:</label>
+                        <input type="text" id="subject" value="">
+                        <label for="instruction">Инструкция:</label>
+                        <input type="text" id="instruction" value="">
+                    </div>
+
+                    <div class="settings-group">
+                        <h3><i class="fas fa-ruler"></i>Размеры и отступы</h3>
+                        <label for="bubble-size">Размер кружков (px):</label>
+                        <input type="number" id="bubble-size" name="bubble-size" value="30" min="20" max="50">
+                        
+                        <label for="bubble-spacing">Отступ между кружками (px):</label>
+                        <input type="number" id="bubble-spacing" name="bubble-spacing" value="10" min="5" max="30">
+                        
+                        <label for="border-padding">Отступ от рамки (px):</label>
+                        <input type="number" id="border-padding" name="border-padding" value="10" min="5" max="50">
+                        
+                        <label for="border-width">Толщина рамки (px):</label>
+                        <input type="number" id="border-width" name="border-width" value="4" min="1" max="10">
+                    </div>
+
+                    <div class="settings-group">
+                        <h3><i class="fas fa-sliders-h"></i> Стилизация</h3>
+                        <label for="scale">Масштаб области ответов:</label>
+                        <input type="range" id="scale" min="0.5" max="2" value="1" step="0.01">
+                        <label for="font-size">Размер шрифта (px):</label>
+                        <input type="number" id="font-size" value="16" min="10" max="30">
+                    </div>
+
+                    <div class="visibility-controls">
+                        <h3><i class="fas fa-eye"></i> Видимость элементов</h3>
+                        <div class="visibility-control">
+                            <input type="checkbox" id="show-title" checked>
+                            <label for="show-title">Заголовок листа</label>
+                        </div>
+                        <div class="visibility-control">
+                            <input type="checkbox" id="show-description" checked>
+                            <label for="show-description">Описание</label>
+                        </div>
+                        <div class="visibility-control">
+                            <input type="checkbox" id="show-student-name" checked>
+                            <label for="show-student-name">ФИО</label>
+                        </div>
+                        <div class="visibility-control">
+                            <input type="checkbox" id="show-date" checked>
+                            <label for="show-date">Дата</label>
+                        </div>
+                        <div class="visibility-control">
+                            <input type="checkbox" id="show-subject" checked>
+                            <label for="show-subject">Предмет</label>
+                        </div>
+                        <div class="visibility-control">
+                            <input type="checkbox" id="show-instruction" checked>
+                            <label for="show-instruction">Инструкция</label>
+                        </div>
+                    </div>
+
+                    <button type="submit">
+                        <i class="fas fa-magic"></i>
+                        Сгенерировать OMR-лист
+                    </button>
+                </form>
+            </div>
+
+            <!-- Секция предпросмотра -->
+            <div class="preview-section">
+                <div id="omr-sheet" class="bg-white rounded-lg shadow-md">
+                    <div class="header draggable" id="header-section">
+                        <i class="fas fa-grip-vertical drag-handle"></i>
+                        <h1 id="omr-title-header">Пример ОМР-Листа</h1>
+                        <p id="omr-description-header">Инструкция по заполнению</p>
+                    </div>
+                    <div class="student-info">
+                        <table>
+                            <tr class="draggable" id="student-name-row">
+                                <td id="student-name-label">ФИО:</td>
+                                <td id="student-name-value">________________________________________</td>
+                                <td><i class="fas fa-grip-vertical drag-handle"></i></td>
+                            </tr>
+                            <tr class="draggable" id="date-row">
+                                <td id="date-label">Дата:</td>
+                                <td id="date-value">________________________________________</td>
+                                <td><i class="fas fa-grip-vertical drag-handle"></i></td>
+                            </tr>
+                            <tr class="draggable" id="subject-row">
+                                <td id="subject-label">Предмет:</td>
+                                <td id="subject-value">________________________________________</td>
+                                <td><i class="fas fa-grip-vertical drag-handle"></i></td>
+                            </tr>
+                            <tr class="draggable" id="instruction-row">
+                                <td id="instruction-label">Инструкция:</td>
+                                <td id="instruction-value">________________________________________</td>
+                                <td><i class="fas fa-grip-vertical drag-handle"></i></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="bubbles-section draggable" id="bubbles-section">
+                        <i class="fas fa-grip-vertical drag-handle"></i>
+                        <div id="bubbles-container" class="bubbles-container" style="width: fit-content;">
+                        </div>
+                    </div>
+                    <div class="footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кнопки действий -->
+    <div class="action-buttons">
+        <button class="action-button save-pdf" id="save-pdf" title="Сохранить PDF">
+            <i class="fas fa-file-pdf"></i>
+        </button>
+        <button class="action-button save-image" id="save-image" title="Сохранить PNG с фоном">
+            <i class="fas fa-file-image"></i>
+        </button>
+        <button class="action-button save-png" id="save-png" title="Сохранить PNG без фона">
+            <i class="fas fa-image"></i>
+        </button>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/constructor.js') }}"></script>
+</body>
+</html> 

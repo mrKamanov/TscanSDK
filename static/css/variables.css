@@ -1,0 +1,30 @@
+/* static/css/variables.css */
+:root {
+    /* Основные цвета */
+    --primary-color: #5E81AC;
+    --secondary-color: #88C0D0;
+    --background-color: #2E3440;
+    --surface-color: #3B4252;
+    --text-color: #ECEFF4;
+    --text-color-inverse: #FFFFFF;
+    
+    /* Цвета состояний */
+    --error-color: #BF616A;
+    --success-color: #A3BE8C;
+    --warning-color: #EBCB8B;
+    --info-color: #81A1C1;
+    
+    /* Дополнительные цвета */
+    --primary-color-dark: #4C6A8C;
+    --secondary-color-dark: #6D99A9;
+    --success-color-dark: #8CA27A;
+    --error-color-dark: #A34F57;
+    
+    /* Состояния */
+    --hover-color: rgba(0, 0, 0, 0.05);
+    --active-color: rgba(0, 0, 0, 0.1);
+    
+    /* Размеры и анимации */
+    --border-radius: 12px;
+    --transition-speed: 0.3s;
+}

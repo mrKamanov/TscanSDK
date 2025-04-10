@@ -1,0 +1,318 @@
+/* Правое боковое меню */
+.right-sidebar {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: min(350px, 90vw);
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(46, 52, 64, 0.65),
+        rgba(59, 66, 82, 0.65));
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    color: var(--text-color);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 24px;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-y: auto;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color) transparent;
+}
+
+.right-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.right-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.right-sidebar::-webkit-scrollbar-thumb {
+    background-color: var(--secondary-color);
+    border-radius: 3px;
+}
+
+.right-sidebar.open {
+    right: 0;
+    transform: translateX(0);
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.sidebar-header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--secondary-color), transparent);
+}
+
+.sidebar-header h3 {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header h3 i {
+    color: var(--secondary-color);
+    filter: drop-shadow(0 2px 4px rgba(136, 192, 208, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.sidebar-header:hover i {
+    transform: rotate(-10deg);
+}
+
+.close-settings-button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 24px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.close-settings-button::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.close-settings-button:hover::before {
+    opacity: 1;
+}
+
+.close-settings-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: rotate(90deg);
+}
+
+.camera-settings {
+    padding: 20px 0;
+}
+
+.camera-settings .input-group {
+    margin-bottom: 25px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.camera-settings .input-group:hover {
+    background: rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.camera-settings .input-group::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.camera-settings .input-group:hover::after {
+    opacity: 1;
+}
+
+.camera-settings label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-weight: 500;
+    color: var(--secondary-color);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.camera-settings label i {
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+}
+
+.camera-settings .input-group:hover label i {
+    transform: scale(1.1);
+}
+
+/* Стилизация ползунков */
+.camera-settings input[type="range"] {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.camera-settings input[type="range"]:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.camera-settings input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--secondary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(136, 192, 208, 0.5);
+}
+
+.camera-settings input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    background: var(--primary-color);
+    box-shadow: 0 0 15px rgba(136, 192, 208, 0.7);
+}
+
+.camera-settings input[type="range"]:active::-webkit-slider-thumb {
+    transform: scale(1.1);
+    background: var(--primary-color);
+}
+
+/* Значения ползунков */
+.input-group .value-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    font-size: 0.9em;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+}
+
+.input-group:hover .value-display {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.input-group .current-value {
+    background: rgba(94, 129, 172, 0.3);
+    padding: 4px 8px;
+    border-radius: 4px;
+    min-width: 40px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.input-group:hover .current-value {
+    background: rgba(94, 129, 172, 0.4);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Анимация при открытии */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+.right-sidebar.open .input-group {
+    animation: slideIn 0.3s ease-out forwards;
+    animation-delay: calc(var(--index) * 0.1s);
+}
+
+/* Медиа-запросы для мобильных устройств */
+@media screen and (max-width: 768px) {
+    .right-sidebar {
+        width: 100%;
+        padding: 16px;
+        padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
+    }
+
+    .sidebar-header {
+        margin-bottom: 20px;
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .camera-settings {
+        padding: 16px 0;
+    }
+
+    .camera-settings .input-group {
+        margin-bottom: 20px;
+        padding: 16px;
+    }
+
+    .sidebar-header h3 {
+        font-size: 1.3em;
+    }
+
+    /* Оптимизация для touch-устройств */
+    .camera-settings input[type="range"]::-webkit-slider-thumb {
+        width: 24px;
+        height: 24px;
+    }
+
+    .close-settings-button {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* Отключаем сложные эффекты для производительности */
+    .camera-settings .input-group::after,
+    .close-settings-button::before {
+        display: none;
+    }
+
+    .camera-settings .input-group:hover {
+        transform: none;
+    }
+}
+
+/* Поддержка тёмной темы системы */
+@media (prefers-color-scheme: dark) {
+    .right-sidebar {
+        background: linear-gradient(135deg, 
+            rgba(46, 52, 64, 0.75),
+            rgba(59, 66, 82, 0.75));
+    }
+}

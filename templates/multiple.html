@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Проверка тестов с множественным выбором">
+    <meta name="theme-color" content="#2E3440">
+    <title>Множественный выбор</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/multiple.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Навигационное меню -->
+        <nav class="top-nav">
+            <a href="/" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span>Главная</span>
+            </a>
+            <a href="/scan" class="nav-link">
+                <i class="fas fa-camera"></i>
+                <span>Сканирование</span>
+            </a>
+            <a href="/batch" class="nav-link">
+                <i class="fas fa-images"></i>
+                <span>Пакетная обработка</span>
+            </a>
+            <a href="/reports" class="nav-link">
+                <i class="fas fa-chart-bar"></i>
+                <span>Отчёты</span>
+            </a>
+            <a href="/instructions" class="nav-link">
+                <i class="fas fa-book"></i>
+                <span>Инструкция</span>
+            </a>
+            <a href="/constructor" class="nav-link">
+                <i class="fas fa-edit"></i>
+                <span>Конструктор</span>
+            </a>
+            <a href="/multiple" class="nav-link active">
+                <i class="fas fa-tasks"></i>
+                <span>Множественный выбор</span>
+            </a>
+        </nav>
+
+        <main class="main-content">
+            <div class="multiple-container">
+                <div class="multiple-header">
+                    <h1><i class="fas fa-tasks"></i> Проверка тестов с множественным выбором</h1>
+                    <button id="reset-all" class="reset-button">
+                        <i class="fas fa-redo"></i> Начать заново
+                    </button>
+                </div>
+
+                <!-- Настройки теста -->
+                <div class="settings-container">
+                    <h2 class="settings-title">
+                        <i class="fas fa-cog"></i> Настройки теста
+                    </h2>
+                    <div class="settings-group">
+                        <div class="input-group">
+                            <label for="questions">Количество вопросов:</label>
+                            <input type="number" id="questions" min="1" max="50" value="5" class="form-control">
+                        </div>
+                        <div class="input-group">
+                            <label for="choices">Количество вариантов:</label>
+                            <input type="number" id="choices" min="1" max="10" value="5" class="form-control">
+                        </div>
+                        <div class="input-group">
+                            <label for="display-mode">Режим отображения:</label>
+                            <select id="display-mode" class="form-control">
+                                <option value="single">Один столбец</option>
+                                <option value="double">Два столбца</option>
+                            </select>
+                        </div>
+                        <div class="criteria-buttons">
+                            <button id="save-criteria" class="criteria-button">
+                                <i class="fas fa-save"></i> Сохранить критерии
+                            </button>
+                            <button id="load-criteria" class="criteria-button">
+                                <i class="fas fa-upload"></i> Загрузить критерии
+                            </button>
+                            <input type="file" id="criteria-file-input" accept=".json" hidden>
+                        </div>
+                    </div>
+                    
+                    <div class="grading-mode">
+                        <h3>Режим оценивания</h3>
+                        <div class="mode-toggle">
+                            <input type="checkbox" id="strict-mode" class="mode-checkbox">
+                            <label for="strict-mode" class="mode-label">
+                                <span class="mode-name">Строгий режим</span>
+                                <span class="mode-description">Требуется выбрать все правильные ответы</span>
+                            </label>
+                        </div>
+                        <div class="mode-info">
+                            <div class="info-item">
+                                <strong>Строгий режим:</strong> Вопрос считается правильным, только если выбраны все правильные ответы
+                            </div>
+                            <div class="info-item">
+                                <strong>Частичный режим:</strong> Начисляются баллы за каждый правильный выбор
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="correct-answers">
+                    <h2 class="answers-title">
+                        <i class="fas fa-check"></i> Правильные ответы
+                    </h2>
+                    <div id="correct-answers-grid" class="correct-answers-grid">
+                        <!-- Сетка для ввода правильных ответов будет генерироваться динамически -->
+                    </div>
+                </div>
+
+                <!-- Зона загрузки файлов -->
+                <div class="upload-zone" id="upload-zone">
+                    <div class="upload-content">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Перетащите файлы сюда или нажмите для выбора</h3>
+                        <p>Поддерживаются изображения в форматах JPG, PNG</p>
+                    </div>
+                    <input type="file" id="file-input" multiple accept="image/*" hidden>
+                </div>
+
+                <button id="start-processing" class="process-button" disabled>
+                    <i class="fas fa-play"></i> Начать обработку
+                </button>
+
+                <!-- Предпросмотр и результаты -->
+                <div class="results-container">
+                    <h2><i class="fas fa-images"></i> Загруженные изображения</h2>
+                    <div class="preview-grid" id="preview-grid">
+                        <!-- Здесь будут отображаться загруженные изображения -->
+                    </div>
+                    
+                    <h2><i class="fas fa-chart-bar"></i> Результаты проверки</h2>
+                    <div class="results-list" id="results-list">
+                        <!-- Здесь будут отображаться результаты обработки -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/multiple.js') }}"></script>
+</body>
+</html> 

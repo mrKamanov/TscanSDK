@@ -1,0 +1,190 @@
+/* Стили для карточки мобильного доступа */
+#qr-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--text-color-inverse);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+#qr-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+#qr-card:hover::before {
+    transform: translateX(100%);
+}
+
+#qr-card .card-icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-color-inverse);
+}
+
+#qr-card h2 {
+    color: var(--text-color-inverse);
+}
+
+#qr-card p {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+#qr-card .card-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#qr-card .card-action {
+    color: var(--text-color-inverse);
+}
+
+#qr-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Стили для модального окна */
+.qr-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(46, 52, 64, 0.9);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(8px);
+}
+
+.qr-modal-content {
+    background: var(--surface-color);
+    padding: 32px;
+    border-radius: var(--border-radius);
+    text-align: center;
+    max-width: 90%;
+    width: 400px;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(136, 192, 208, 0.1);
+    animation: modalAppear 0.3s ease;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.qr-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 20px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(136, 192, 208, 0.1);
+    transition: all 0.3s ease;
+}
+
+.qr-modal-close:hover {
+    background: rgba(136, 192, 208, 0.2);
+    color: var(--secondary-color);
+    transform: rotate(90deg);
+}
+
+.qr-modal-title {
+    color: var(--secondary-color);
+    margin-bottom: 16px;
+    font-size: 1.4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.qr-modal-title i {
+    font-size: 1.2em;
+    opacity: 0.9;
+}
+
+.qr-modal-text {
+    color: var(--text-color);
+    margin-bottom: 24px;
+    line-height: 1.6;
+    opacity: 0.8;
+    font-size: 0.95em;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.qr-code-container {
+    margin: 24px auto;
+    padding: 24px;
+    background: white;
+    border-radius: var(--border-radius);
+    display: inline-block;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.qr-code-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: var(--border-radius);
+    background: linear-gradient(135deg, rgba(136, 192, 208, 0.1), transparent);
+    pointer-events: none;
+}
+
+.qr-modal-url {
+    background: rgba(46, 52, 64, 0.5);
+    padding: 12px 16px;
+    border-radius: var(--border-radius);
+    margin: 16px auto 0;
+    word-break: break-all;
+    font-family: monospace;
+    color: var(--text-color);
+    font-size: 0.9em;
+    max-width: fit-content;
+    border: 1px solid rgba(136, 192, 208, 0.1);
+}
+
+@media screen and (max-width: 768px) {
+    .qr-modal-content {
+        padding: 24px;
+        width: 85%;
+    }
+
+    .qr-code-container {
+        padding: 16px;
+    }
+
+    .qr-modal-text {
+        font-size: 0.9em;
+    }
+} 

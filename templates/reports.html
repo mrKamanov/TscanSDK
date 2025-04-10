@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Отчёты сканера тестов">
+    <meta name="theme-color" content="#2E3440">
+    <title>Отчёты</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/video.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/buttons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/media.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/grades.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        @media screen and (max-width: 768px) {
+            .sidebar.open-sidebar {
+                width: 100%;
+            }
+
+            .main-content.open-sidebar {
+                margin-left: 0;
+                opacity: 0.3;
+            }
+
+            .report-item {
+                margin-bottom: 24px;
+            }
+
+            .charts-container {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .chart-container {
+                min-width: 100%;
+            }
+
+            .chart-container canvas {
+                width: 100%;
+                height: 150px;
+            }
+
+            .report-list {
+                margin-bottom: 24px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .button-group button {
+                width: 100%;
+            }
+        }
+
+        @media screen and (min-width: 769px) {
+            .chart-container canvas {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационное меню -->
+    <nav class="top-nav">
+        <a href="/" class="nav-link">
+            <i class="fas fa-home"></i>
+            <span>Главная</span>
+        </a>
+        <a href="/scan" class="nav-link">
+            <i class="fas fa-camera"></i>
+            <span>Сканирование</span>
+        </a>
+        <a href="/batch" class="nav-link">
+            <i class="fas fa-images"></i>
+            <span>Пакетная обработка</span>
+        </a>
+        <a href="/multiple" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>Множественный выбор</span>
+        </a>
+        <a href="/reports" class="nav-link active">
+            <i class="fas fa-chart-bar"></i>
+            <span>Отчёты</span>
+        </a>
+        <a href="/instructions" class="nav-link">
+            <i class="fas fa-book"></i>
+            <span>Инструкция</span>
+        </a>
+        <a href="/constructor" class="nav-link">
+            <i class="fas fa-edit"></i>
+            <span>Конструктор</span>
+        </a>
+    </nav>
+
+    <div class="container">
+        <button id="toggle-sidebar" aria-label="Открыть меню">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="sidebar">
+            <div class="sidebar-content" id="sidebar-content">
+                <h2><i class="fas fa-file-alt"></i> Отчёты</h2>
+                <div class="settings-group">
+                    <h3><i class="fas fa-sliders-h"></i> Критерии оценки</h3>
+                    <div class="input-group">
+                        <label for="grade_5">Оценка 5 :</label>
+                        <input type="text" id="grade_5" name="grade_5" value="90-100" placeholder="90-100">
+                    </div>
+                    <div class="input-group">
+                        <label for="grade_4">Оценка 4 :</label>
+                        <input type="text" id="grade_4" name="grade_4" value="70-89" placeholder="70-89">
+                    </div>
+                    <div class="input-group">
+                        <label for="grade_3">Оценка 3 :</label>
+                        <input type="text" id="grade_3" name="grade_3" value="50-69" placeholder="50-69">
+                    </div>
+                    <div class="input-group">
+                        <label for="grade_2">Оценка 2 :</label>
+                        <input type="text" id="grade_2" name="grade_2" value="0-49" placeholder="0-49">
+                    </div>
+                    <div class="button-group">
+                        <button id="apply-grading" class="success-button">
+                            <i class="fas fa-save"></i> Применить критерии
+                        </button>
+                    </div>
+                </div>
+                <div class="navigation-group">
+                    <div class="button-group">
+                        <a href="/" class="scan-button">
+                            <i class="fas fa-camera-retro"></i> К сканированию
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main class="main-content">
+            <div class="reports-container">
+                <h2><i class="fas fa-file-alt"></i> Отчёты</h2>
+                <div class="report-list" id="report-list">
+                    {% for report in report_list %}
+                    <div class="report-item" id="report-{{ report.work_number }}">
+                        <h3 id="work-number-{{ report.work_number }}">Работа {{ report.work_number }}</h3>
+                        <p id="correct-answers-{{ report.work_number }}"><strong>Правильные ответы:</strong> {{ report.correct_answers_count }}</p>
+                        <p id="incorrect-answers-{{ report.work_number }}"><strong>Неправильные ответы:</strong> {{ report.incorrect_answers_count }}</p>
+                        <p id="correct-questions-{{ report.work_number }}"><strong>Правильные вопросы:</strong> {{ report.correct_questions | join(', ') }}</p>
+                        <p id="incorrect-questions-{{ report.work_number }}"><strong>Неправильные вопросы:</strong> {{ report.incorrect_question_numbers | join(', ') }}</p>
+                        
+                        {% if report.is_multiple_choice %}
+                            <div class="multiple-choice-details">
+                                <p><strong>Режим проверки:</strong> {{ 'Строгий' if report.strict_mode else 'Частичный' }}</p>
+                                <ul id="incorrect-questions-list-{{ report.work_number }}">
+                                    {% for incorrect in report.incorrect_questions %}
+                                    <li>
+                                        Вопрос {{ incorrect.question_number }}:
+                                        <br>- выбраны варианты: {{ incorrect.selected_answers | join(', ') }}
+                                        <br>- правильные варианты: {{ incorrect.correct_answers | join(', ') }}
+                                        {% if not report.strict_mode %}
+                                            <br>- правильно выбрано: {{ incorrect.correct_selected }} из {{ incorrect.total_correct }}
+                                            <br>- неправильно выбрано: {{ incorrect.incorrect_selected }}
+                                            <br>- балл за вопрос: {{ "%.1f"|format(incorrect.partial_score * 100) }}%
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else %}
+                            <ul id="incorrect-questions-list-{{ report.work_number }}">
+                                {% for incorrect in report.incorrect_questions %}
+                                <li>
+                                    Вопрос {{ incorrect.question_number }}:
+                                    <span class="incorrect-answer">Выбран {{ incorrect.selected_answer }},</span>
+                                    <span class="correct-answer">Правильный {{ incorrect.correct_answer }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        
+                        <p id="score-percentage-{{ report.work_number }}"><strong>Процент выполнения:</strong> <span class="percent-complete {{ 'low' if report.score_percentage < 50 else 'medium' if report.score_percentage < 70 else 'high' }}">{{ report.score_percentage }}%</span></p>
+                        <p id="grade-{{ report.work_number }}" class="grade grade-{{ report.grade }}">Оценка: {{ report.grade }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="charts-container">
+                    <div class="chart-container">
+                        <canvas id="gradeChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="percentageChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="correctAnswersChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="incorrectAnswersChart"></canvas>
+                    </div>
+                </div>
+                <div class="button-group" style="display: flex; justify-content: center; gap: 16px; margin-top: 24px;">
+                    <button id="resetReports" class="btn btn-danger" style="width: fit-content; min-width: 200px;">
+                        <i class="fas fa-trash"></i>
+                        <span>Сбросить отчёты</span>
+                    </button>
+                    <button id="downloadExcel" class="btn btn-success" style="width: fit-content; min-width: 200px;">
+                        <i class="fas fa-file-excel"></i>
+                        <span>Скачать XLSX</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/createXlsxReport.js') }}"></script>
+    <script>
+        // Передаем значение questions на клиентскую сторону
+        const questions = {{ questions }};
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const socket = io();
+            const resetButton = document.getElementById('resetReports');
+            const downloadButton = document.getElementById('downloadExcel');
+
+            // Обработчик для кнопки сброса отчетов
+            resetButton.addEventListener('click', () => {
+                if (confirm('Вы уверены, что хотите удалить все отчеты?')) {
+                    socket.emit('reset_reports');
+                    // Очищаем список отчетов на странице
+                    document.getElementById('report-list').innerHTML = '';
+                    // Обновляем графики
+                    updateCharts();
+                }
+            });
+
+            // Обработчик для кнопки скачивания Excel
+            downloadButton.addEventListener('click', () => {
+                // Собираем данные из отчетов
+                const reportItems = document.querySelectorAll('.report-item');
+                const reportsData = Array.from(reportItems).map(item => {
+                    const workNumber = item.id.replace('report-', '');
+                    const correctAnswers = item.querySelector(`#correct-answers-${workNumber}`).textContent.match(/\d+/)[0];
+                    const incorrectAnswers = item.querySelector(`#incorrect-answers-${workNumber}`).textContent.match(/\d+/)[0];
+                    const correctQuestions = item.querySelector(`#correct-questions-${workNumber}`).textContent.split(':')[1].trim();
+                    const incorrectQuestions = item.querySelector(`#incorrect-questions-${workNumber}`).textContent.split(':')[1].trim();
+                    const scorePercentage = item.querySelector(`#score-percentage-${workNumber} .percent-complete`).textContent.replace('%', '');
+                    const grade = item.querySelector(`#grade-${workNumber}`).textContent.split(':')[1].trim();
+                    
+                    return {
+                        work_number: workNumber,
+                        correct_answers_count: parseInt(correctAnswers),
+                        incorrect_answers_count: parseInt(incorrectAnswers),
+                        correct_questions: correctQuestions.split(', ').map(Number),
+                        incorrect_question_numbers: incorrectQuestions.split(', ').map(Number),
+                        score_percentage: parseFloat(scorePercentage),
+                        grade: parseInt(grade)
+                    };
+                });
+
+                // Вызываем функцию создания Excel файла
+                createXlsxReport(reportsData);
+            });
+
+            // Обработчик ответа сервера на сброс отчетов
+            socket.on('reports_reset', () => {
+                console.log('Отчеты успешно сброшены');
+                // Можно добавить уведомление для пользователя
+            });
+        });
+    </script>
+</body>
+</html>

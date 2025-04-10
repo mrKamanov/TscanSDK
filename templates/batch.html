@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пакетная обработка</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/buttons.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="/" class="nav-link">
+            <i class="fas fa-home"></i>
+            <span>Главная</span>
+        </a>
+        <a href="/scan" class="nav-link">
+            <i class="fas fa-camera"></i>
+            <span>Сканирование</span>
+        </a>
+        <a href="/batch" class="nav-link active">
+            <i class="fas fa-images"></i>
+            <span>Пакетная обработка</span>
+        </a>
+        <a href="/reports" class="nav-link">
+            <i class="fas fa-chart-bar"></i>
+            <span>Отчёты</span>
+        </a>
+        <a href="/instructions" class="nav-link">
+            <i class="fas fa-book"></i>
+            <span>Инструкция</span>
+        </a>
+        <a href="/constructor" class="nav-link">
+            <i class="fas fa-edit"></i>
+            <span>Конструктор</span>
+        </a>
+    </nav>
+    <button id="uploadButton" class="btn btn-primary">
+        <i class="fas fa-upload"></i>
+        <span>Загрузить файлы</span>
+    </button>
+    <button id="startProcessing" class="btn btn-success">
+        <i class="fas fa-check"></i>
+        <span>Начать проверку</span>
+    </button>
+    <button id="sendToReport" class="btn btn-secondary">
+        <i class="fas fa-file-export"></i>
+        <span>Отправить в отчет</span>
+    </button> 
+</body>
+</html> 

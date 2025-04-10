@@ -1,0 +1,465 @@
+/* static/css/main.css */
+.menu-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 24px;
+}
+
+.main-title {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 48px;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.main-title i {
+    color: var(--secondary-color);
+    filter: drop-shadow(0 0 10px rgba(136, 192, 208, 0.3));
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 24px;
+}
+
+.menu-card {
+    background: linear-gradient(135deg, 
+        rgba(46, 52, 64, 0.95),
+        rgba(59, 66, 82, 0.95));
+    border-radius: var(--border-radius);
+    padding: 24px;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: all var(--transition-speed) ease;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.menu-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+    border-color: var(--secondary-color);
+}
+
+.menu-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg,
+        transparent,
+        rgba(136, 192, 208, 0.1),
+        transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+}
+
+.menu-card:hover::before {
+    transform: translateX(100%);
+}
+
+.card-icon {
+    font-size: 2.5em;
+    color: var(--secondary-color);
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.menu-card h2 {
+    font-size: 1.5em;
+    margin-bottom: 16px;
+    color: var(--text-color);
+}
+
+.menu-card p {
+    color: rgba(236, 239, 244, 0.8);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.card-footer {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+.card-action i {
+    transition: transform var(--transition-speed) ease;
+}
+
+.menu-card:hover .card-action i {
+    transform: translateX(4px);
+}
+
+/* Медиа-запросы */
+@media screen and (max-width: 768px) {
+    .menu-container {
+        padding: 24px 16px;
+    }
+
+    .main-title {
+        font-size: 2em;
+        margin-bottom: 32px;
+    }
+
+    .cards-grid {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+}
+
+/* Анимация появления */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.menu-card {
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.menu-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.menu-card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Оставляем только нужные стили */
+.main-content::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 75% 25%, rgba(136, 192, 208, 0.08) 2px, transparent 2.5px),
+        radial-gradient(circle at 25% 75%, rgba(136, 192, 208, 0.08) 2px, transparent 2.5px);
+    background-size: 150px 150px;
+    opacity: 0.3;
+    z-index: -2;
+    animation: floatBackground 60s linear infinite;
+}
+
+.decorative-elements {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Позиционирование групп */
+.decorative-letters,
+.decorative-icons {
+    position: fixed;
+    white-space: nowrap;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Группы букв */
+.decorative-letters:first-of-type {
+    bottom: 15%;
+    left: 10%;
+    font-size: 42px;
+}
+
+.decorative-letters:nth-of-type(2) {
+    top: 15%;
+    right: 10%;
+    font-size: 36px;
+}
+
+/* Группы иконок */
+.decorative-icons.top-left {
+    top: 10%;
+    left: 5%;
+    font-size: 48px;
+}
+
+.decorative-icons.bottom-right {
+    bottom: 10%;
+    right: 5%;
+    font-size: 48px;
+}
+
+/* Стили для иконок */
+.icon {
+    display: inline-block;
+    margin: 0 0.4em;
+    opacity: 0.6;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    transition: all 0.3s ease;
+}
+
+.icon:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+/* Анимации для групп иконок */
+@keyframes floatTopLeft {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-15px);
+    }
+}
+
+@keyframes floatBottomRight {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Применяем анимации к группам иконок */
+.decorative-icons.top-left {
+    animation: floatTopLeft 9s ease-in-out infinite;
+}
+
+.decorative-icons.bottom-right {
+    animation: floatBottomRight 6s ease-in-out infinite;
+}
+
+.circle-letter {
+    position: relative;
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    border: 2px solid rgba(129, 161, 193, 0.8);
+    border-radius: 50%;
+    color: rgba(129, 161, 193, 0.8);
+    margin: 0 0.2em;
+    background: rgba(46, 52, 64, 0.3);
+    backdrop-filter: blur(4px);
+}
+
+/* Центрирование содержимого кружка */
+.circle-letter::before {
+    content: attr(data-letter);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Arial', sans-serif;
+    font-size: 0.8em;
+}
+
+/* Анимация плавания */
+@keyframes floatLetters {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Применяем анимацию к обеим группам */
+.decorative-letters:first-of-type {
+    animation: floatLetters 8s ease-in-out infinite;
+}
+
+.decorative-letters:nth-of-type(2) {
+    animation: floatLetters 7s ease-in-out infinite;
+}
+
+.check {
+    color: rgba(163, 190, 140, 0.8);
+    margin-right: 0.4em;
+    text-shadow: 0 0 10px rgba(163, 190, 140, 0.4);
+    font-size: 1em;
+}
+
+.cross {
+    color: rgba(191, 97, 106, 0.8);
+    margin-left: 0.4em;
+    text-shadow: 0 0 10px rgba(191, 97, 106, 0.4);
+    font-size: 1em;
+}
+
+/* Анимации для разных групп */
+@keyframes floatTopRight {
+    0%, 100% {
+        transform: rotate(15deg) translateY(0);
+    }
+    50% {
+        transform: rotate(15deg) translateY(-15px);
+    }
+}
+
+@keyframes floatTopLeft {
+    0%, 100% {
+        transform: rotate(-10deg) translateX(0);
+    }
+    50% {
+        transform: rotate(-10deg) translateX(-15px);
+    }
+}
+
+@keyframes floatBottomRight {
+    0%, 100% {
+        transform: rotate(10deg) translateY(0);
+    }
+    50% {
+        transform: rotate(10deg) translateY(-15px);
+    }
+}
+
+/* Применяем анимации */
+.bottom-left {
+    animation: floatLetters 8s ease-in-out infinite;
+}
+
+.top-right {
+    animation: floatTopRight 7s ease-in-out infinite;
+}
+
+.top-left {
+    animation: floatTopLeft 9s ease-in-out infinite;
+}
+
+.bottom-right {
+    animation: floatBottomRight 6s ease-in-out infinite;
+}
+
+/* Стили для кружков с цифрами */
+.top-right .circle-letter {
+    font-size: 0.7em;  /* Делаем цифры немного меньше */
+    background: rgba(46, 52, 64, 0.4);  /* Немного темнее фон */
+}
+
+/* Увеличиваем контрастность для иконок */
+.decorative-icons .icon {
+    text-shadow: 0 0 15px rgba(136, 192, 208, 0.6);
+}
+
+/* Анимация для фоновых элементов */
+@keyframes floatBackground {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 150px 150px;
+    }
+}
+
+/* Стили для футера */
+.footer {
+    width: fit-content;
+    padding: 16px 32px;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    margin: 20px auto;
+    border-radius: var(--border-radius);
+    background: linear-gradient(135deg, 
+        rgba(46, 52, 64, 0.95),
+        rgba(59, 66, 82, 0.95));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.school-name {
+    font-size: 1.1em;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.contact-info {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+
+.email-link, .github-link {
+    color: var(--text-color);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+}
+
+.email-link:hover, .github-link:hover {
+    color: var(--secondary-color);
+    transform: translateY(-2px);
+    opacity: 1;
+}
+
+.github-link i {
+    font-size: 24px;
+}
+
+.email-link i {
+    color: var(--secondary-color);
+}
+
+@media screen and (max-width: 768px) {
+    .footer {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+        padding: 16px;
+        width: fit-content;
+        margin: 16px auto;
+    }
+
+    .contact-info {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .email-link {
+        font-size: 0.9em;
+    }
+} 

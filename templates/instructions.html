@@ -1,0 +1,1993 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инструкция - Сканер тестов</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .instructions-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            background: var(--surface-color);
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .instructions-section {
+            margin-bottom: 32px;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .instructions-section:hover {
+            transform: translateY(-4px);
+        }
+
+        .instructions-section h2 {
+            color: var(--secondary-color);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8em;
+        }
+
+        .instructions-section h3 {
+            color: var(--text-color);
+            margin: 16px 0;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .instructions-section p {
+            margin: 12px 0;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 16px 0;
+        }
+
+        .feature-list li {
+            margin: 16px 0;
+            padding-left: 32px;
+            position: relative;
+            font-size: 1.1em;
+            display: flex;
+            align-items: flex-start;
+            min-height: 24px;
+            line-height: 1.4;
+        }
+
+        .feature-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            color: var(--text-color-inverse);
+            font-size: 12px;
+        }
+
+        .button-example {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--border-radius);
+            margin: 8px 0;
+            font-size: 1.1em;
+            color: var(--text-color-inverse);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .button-example:hover {
+            transform: translateY(-2px);
+        }
+
+        .button-example i {
+            font-size: 1.2em;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, rgba(94, 129, 172, 0.1), rgba(136, 192, 208, 0.1));
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            margin: 24px 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .tip-box strong {
+            color: var(--secondary-color);
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .control-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .control-item:hover {
+            transform: translateY(-4px);
+        }
+
+        .control-item h4 {
+            color: var(--secondary-color);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-item p {
+            margin: 0;
+            font-size: 0.95em;
+        }
+
+        .image-example {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-example img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @media screen and (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 0;
+                overflow-x: hidden;
+            }
+
+            .main-content {
+                padding: 0;
+                margin: 0;
+                width: 100%;
+            }
+
+            .instructions-container {
+                margin: 0;
+                padding: 10px;
+                width: 100%;
+                box-sizing: border-box;
+                border-radius: 0;
+            }
+
+            .instructions-section {
+                margin: 10px 0;
+                padding: 10px;
+                width: 100%;
+                box-sizing: border-box;
+                border-radius: 8px;
+            }
+
+            .instructions-section h2 {
+                font-size: 1.2em;
+                margin-bottom: 10px;
+            }
+
+            .instructions-section h3 {
+                font-size: 1.1em;
+                margin: 10px 0;
+            }
+
+            .instructions-section p {
+                font-size: 0.9em;
+                margin: 8px 0;
+            }
+
+            .feature-list {
+                margin: 10px 0;
+            }
+
+            .feature-list li {
+                padding-left: 28px;
+                font-size: 0.9em;
+                margin: 12px 0;
+                line-height: 1.3;
+            }
+
+            .feature-list li::before {
+                width: 16px;
+                height: 16px;
+                font-size: 10px;
+                top: 2px;
+            }
+
+            .controls-grid {
+                margin: 10px 0;
+                gap: 8px;
+            }
+
+            .control-item {
+                padding: 10px;
+                margin: 0;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .button-example {
+                width: 100%;
+                padding: 8px 12px;
+                font-size: 0.9em;
+                margin: 4px 0;
+                box-sizing: border-box;
+                justify-content: flex-start;
+            }
+
+            .button-example i {
+                margin-right: 8px;
+                font-size: 1em;
+            }
+
+            .tip-box {
+                padding: 12px;
+                margin: 10px 0;
+            }
+
+            .info-box {
+                padding: 12px;
+                margin: 10px 0;
+            }
+
+            .criteria-table {
+                margin: 10px 0;
+                font-size: 0.9em;
+            }
+
+            .criteria-table th,
+            .criteria-table td {
+                padding: 8px;
+            }
+
+            .button-grid {
+                gap: 8px;
+                margin: 10px 0;
+            }
+
+            .button-example-container {
+                padding: 8px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .instructions-container {
+                padding: 8px;
+            }
+
+            .instructions-section {
+                padding: 8px;
+                margin: 8px 0;
+            }
+
+            .instructions-section h2 {
+                font-size: 1.1em;
+            }
+
+            .button-example {
+                padding: 6px 10px;
+                font-size: 0.85em;
+            }
+
+            .button-example i {
+                margin-right: 6px;
+            }
+
+            .feature-list li {
+                padding-left: 24px;
+                font-size: 0.85em;
+                margin: 10px 0;
+            }
+
+            .feature-list li::before {
+                width: 14px;
+                height: 14px;
+                font-size: 9px;
+                top: 2px;
+            }
+
+            .criteria-table {
+                font-size: 0.8em;
+            }
+
+            .criteria-table th,
+            .criteria-table td {
+                padding: 6px;
+            }
+        }
+
+        @media screen and (min-width: 769px) and (max-width: 1024px) {
+            .instructions-container {
+                padding: 20px;
+            }
+
+            .button-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .controls-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .charts-preview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .button-example.success {
+            background: linear-gradient(135deg, #A3BE8C, #8CA27A) !important;
+        }
+
+        .button-example.danger {
+            background: linear-gradient(135deg, #BF616A, #A34F57) !important;
+        }
+
+        .button-example.primary {
+            background: linear-gradient(135deg, #5E81AC, #4C6A8C) !important;
+        }
+
+        .button-example.secondary {
+            background: linear-gradient(135deg, #88C0D0, #6D99A9) !important;
+        }
+
+        .step-by-step {
+            margin: 24px 0;
+        }
+
+        .step {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--secondary-color);
+            transition: transform 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-4px);
+        }
+
+        .step h3 {
+            color: var(--secondary-color);
+            margin-top: 0;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .step h3 i {
+            font-size: 1.2em;
+            color: var(--secondary-color);
+        }
+
+        .step ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .step ul li {
+            margin: 12px 0;
+            padding-left: 24px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .step ul li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .step ul ul {
+            margin-left: 24px;
+            margin-top: 8px;
+        }
+
+        .step ul ul li::before {
+            content: '○';
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .button-example-container {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 16px;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+
+        .button-example-container p {
+            margin: 8px 0 0 0;
+            font-size: 0.9em;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(94, 129, 172, 0.1), rgba(136, 192, 208, 0.1));
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 24px 0;
+            border: 1px solid rgba(136, 192, 208, 0.2);
+        }
+
+        .info-box-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            margin-bottom: 12px;
+            width: 100%;
+        }
+
+        .info-box-content {
+            color: var(--text-color);
+            line-height: 1.6;
+            margin-top: 8px;
+        }
+
+        .info-box .info-icon {
+            font-size: 1.5em;
+            color: var(--secondary-color);
+            flex-shrink: 0;
+        }
+
+        .info-box strong {
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            margin-left: 12px;
+        }
+
+        .info-box p {
+            margin: 8px 0 0 0;
+        }
+
+        .info-box ul.feature-list {
+            margin: 12px 0 0 0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .info-box {
+                padding: 16px;
+            }
+
+            .info-box-title {
+                font-size: 1.1em;
+                margin-bottom: 8px;
+            }
+
+            .info-box .info-icon {
+                font-size: 1.3em;
+            }
+
+            .info-box strong {
+                font-size: 1.1em;
+            }
+        }
+
+        .criteria-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .criteria-table th,
+        .criteria-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .criteria-table th {
+            background: rgba(94, 129, 172, 0.2);
+            color: var(--secondary-color);
+        }
+
+        .criteria-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .criteria-table td:first-child {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .charts-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin: 24px 0;
+        }
+
+        .chart-example {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .chart-example i {
+            font-size: 2em;
+            color: var(--secondary-color);
+            margin-bottom: 12px;
+        }
+
+        .chart-example h4 {
+            color: var(--text-color);
+            margin: 12px 0;
+        }
+
+        .chart-example p {
+            font-size: 0.9em;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        @media screen and (max-width: 360px) {
+            .instructions-container {
+                padding: 4px;
+            }
+
+            .instructions-section {
+                padding: 8px;
+            }
+
+            .instructions-section h2 {
+                font-size: 1.1em;
+            }
+
+            .button-example {
+                padding: 6px 12px;
+                font-size: 0.9em;
+            }
+
+            .control-item {
+                padding: 8px;
+            }
+
+            .tip-box {
+                padding: 8px;
+            }
+
+            .step {
+                padding: 8px;
+            }
+
+            .criteria-table th,
+            .criteria-table td {
+                padding: 6px;
+                font-size: 0.85em;
+            }
+        }
+
+        .template-example {
+            background: var(--surface-color);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin: 20px 0;
+        }
+
+        .answer-sheet-example {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .answer-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #000;
+        }
+
+        .answer-table td {
+            border: none;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .circle {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .circle.empty::before {
+            content: attr(data-number);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+        }
+
+        .download-section {
+            display: flex;
+            gap: 16px;
+            margin: 24px 0;
+            flex-wrap: wrap;
+            padding: 0 8px;
+            box-sizing: border-box;
+        }
+
+        .download-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            background: var(--primary-color);
+            color: var(--text-color-inverse);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            width: fit-content;
+        }
+
+        .download-button:hover {
+            transform: translateY(-2px);
+            background: var(--secondary-color);
+        }
+
+        .download-button.template {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .download-button.font {
+            background: linear-gradient(135deg, var(--secondary-color), var(--info-color));
+        }
+
+        .requirements-list {
+            margin-top: 24px;
+        }
+
+        .requirements-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .requirements-list li {
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .requirements-list i {
+            color: var(--success-color);
+        }
+
+        @media screen and (max-width: 768px) {
+            .template-example {
+                padding: 16px;
+            }
+
+            .answer-sheet-example {
+                padding: 12px;
+            }
+
+            .circle {
+                width: 24px;
+                height: 24px;
+            }
+            .circle.empty::before {
+                font-size: 12px;
+            }
+
+            .download-section {
+                padding: 0;
+                margin: 16px 0;
+            }
+
+            .download-button {
+                width: 100%;
+                padding: 10px 16px;
+                justify-content: center;
+                font-size: 14px;
+            }
+        }
+
+        .red-hint {
+            color: #ff0000;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin: 4px 0;
+        }
+
+        .remove-hint {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%) translateX(-110%);
+            white-space: nowrap;
+        }
+
+        .answer-sheet-example {
+            position: relative;
+        }
+
+        @media screen and (max-width: 768px) {
+            .remove-hint {
+                position: static;
+                transform: none;
+                margin-top: 8px;
+                text-align: left;
+            }
+        }
+
+        .form-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        .form-field-label {
+            min-width: 100px;
+            color: #000;
+            font-weight: 500;
+        }
+        .form-field-input {
+            flex: 1;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 4px;
+            padding: 0 10px;
+        }
+
+        .hotkeys-info {
+            background: linear-gradient(135deg, rgba(94, 129, 172, 0.1), rgba(136, 192, 208, 0.1));
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 16px 0;
+            border: 1px solid rgba(136, 192, 208, 0.2);
+        }
+
+        .hotkeys-info h4 {
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hotkey-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 12px 0;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            transition: transform 0.2s ease;
+        }
+
+        .hotkey-row:hover {
+            transform: translateX(4px);
+        }
+
+        .hotkey-badge {
+            background: var(--secondary-color);
+            color: var(--text-color-inverse);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+            min-width: 80px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .hotkey-desc {
+            color: var(--text-color);
+            font-size: 1em;
+        }
+
+        .tip {
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--secondary-color);
+            font-size: 0.9em;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+
+        .tip i {
+            font-size: 1.2em;
+            color: var(--secondary-color);
+        }
+
+        @media screen and (max-width: 768px) {
+            .hotkeys-info {
+                padding: 16px;
+            }
+
+            .hotkey-row {
+                padding: 6px;
+                gap: 12px;
+            }
+
+            .hotkey-badge {
+                min-width: 60px;
+                padding: 4px 8px;
+            }
+
+            .hotkey-desc {
+                font-size: 0.9em;
+            }
+        }
+
+        .navigation-box {
+            background: linear-gradient(135deg, rgba(94, 129, 172, 0.1), rgba(136, 192, 208, 0.1));
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin: 24px 0;
+            border: 1px solid rgba(136, 192, 208, 0.2);
+        }
+
+        .navigation-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--secondary-color);
+            font-size: 1.2em;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(136, 192, 208, 0.2);
+        }
+
+        .navigation-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--border-radius);
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            transform: translateX(8px);
+            background: rgba(94, 129, 172, 0.2);
+            color: var(--secondary-color);
+        }
+
+        .nav-item i {
+            font-size: 1.2em;
+            color: var(--secondary-color);
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-item span {
+            font-size: 1em;
+        }
+
+        @media screen and (max-width: 768px) {
+            .navigation-box {
+                padding: 16px;
+                margin: 16px 0;
+            }
+
+            .navigation-title {
+                font-size: 1.1em;
+                margin-bottom: 12px;
+                padding-bottom: 8px;
+            }
+
+            .navigation-content {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .nav-item {
+                padding: 10px;
+            }
+
+            .nav-item i {
+                font-size: 1.1em;
+                width: 20px;
+            }
+
+            .nav-item span {
+                font-size: 0.9em;
+            }
+        }
+
+        @media screen and (max-width: 360px) {
+            .instructions-container {
+                padding: 4px;
+            }
+
+            .instructions-section {
+                padding: 8px;
+            }
+
+            .instructions-section h2 {
+                font-size: 1.1em;
+            }
+
+            .button-example {
+                padding: 6px 12px;
+                font-size: 0.9em;
+            }
+
+            .control-item {
+                padding: 8px;
+            }
+
+            .tip-box {
+                padding: 8px;
+            }
+
+            .step {
+                padding: 8px;
+            }
+
+            .criteria-table th,
+            .criteria-table td {
+                padding: 6px;
+                font-size: 0.85em;
+            }
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 50%;
+            color: var(--text-color-inverse);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .scroll-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        @media screen and (max-width: 768px) {
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+
+        @media screen and (max-width: 360px) {
+            .instructions-container {
+                padding: 4px;
+            }
+
+            .instructions-section {
+                padding: 8px;
+            }
+
+            .instructions-section h2 {
+                font-size: 1.1em;
+            }
+
+            .button-example {
+                padding: 6px 12px;
+                font-size: 0.9em;
+            }
+
+            .control-item {
+                padding: 8px;
+            }
+
+            .tip-box {
+                padding: 8px;
+            }
+
+            .step {
+                padding: 8px;
+            }
+
+            .criteria-table th,
+            .criteria-table td {
+                padding: 6px;
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигационное меню -->
+    <nav class="top-nav">
+        <a href="/" class="nav-link">
+            <i class="fas fa-home"></i>
+            <span>Главная</span>
+        </a>
+        <a href="/scan" class="nav-link">
+            <i class="fas fa-camera"></i>
+            <span>Сканирование</span>
+        </a>
+        <a href="/batch" class="nav-link">
+            <i class="fas fa-images"></i>
+            <span>Пакетная обработка</span>
+        </a>
+        <a href="/multiple" class="nav-link">
+            <i class="fas fa-tasks"></i>
+            <span>Множественный выбор</span>
+        </a>
+        <a href="/reports" class="nav-link">
+            <i class="fas fa-chart-bar"></i>
+            <span>Отчёты</span>
+        </a>
+        <a href="/instructions" class="nav-link active">
+            <i class="fas fa-book"></i>
+            <span>Инструкция</span>
+        </a>
+        <a href="/constructor" class="nav-link">
+            <i class="fas fa-edit"></i>
+            <span>Конструктор</span>
+        </a>
+    </nav>
+
+    <div class="container">
+        <main class="main-content">
+            <div class="instructions-container">
+                <div class="instructions-section">
+                    <h2><i class="fas fa-info-circle"></i> Общая информация</h2>
+                    <div class="navigation-box">
+                        <div class="navigation-title">
+                            <i class="fas fa-list"></i>
+                            <span>Оглавление</span>
+                        </div>
+                        <div class="navigation-content">
+                            <a href="#realtime-scanning" class="nav-item">
+                                <i class="fas fa-camera"></i>
+                                <span>Сканирование в реальном времени</span>
+                            </a>
+                            <a href="#batch-processing" class="nav-item">
+                                <i class="fas fa-images"></i>
+                                <span>Пакетная обработка</span>
+                            </a>
+                            <a href="#multiple-choice" class="nav-item">
+                                <i class="fas fa-tasks"></i>
+                                <span>Множественный выбор</span>
+                            </a>
+                            <a href="#constructor" class="nav-item">
+                                <i class="fas fa-edit"></i>
+                                <span>Конструктор тестов</span>
+                            </a>
+                            <a href="#reports" class="nav-item">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Работа с отчётами</span>
+                            </a>
+                            <a href="#grading-criteria" class="nav-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>Настройка критериев оценивания</span>
+                            </a>
+                        </div>
+                    </div>
+                    <p>Приложение предназначено для автоматической проверки тестовых работ. Система распознает отмеченные ответы и сравнивает их с правильными, формируя подробный отчет о результатах.</p>
+                </div>
+
+                <div class="instructions-section">
+                    <h2 id="realtime-scanning"><i class="fas fa-camera"></i> Сканирование в реальном времени</h2>
+                    
+                    <h3><i class="fas fa-list"></i> Порядок работы:</h3>
+                    <ol class="feature-list">
+                        <li>Включите камеру, нажав кнопку "Включить камеру"</li>
+                        <li>Расположите тестовый бланк в поле зрения камеры</li>
+                        <li>При необходимости настройте параметры изображения (яркость, контраст и т.д.)</li>
+                        <li>Создайте стоп-кадр для фиксации результата</li>
+                        <li>Проверьте правильность распознавания</li>
+                        <li>Отправьте результат в отчёт</li>
+                    </ol>
+                    
+                    <div class="controls-grid">
+                        <div class="control-item">
+                            <h4><i class="fas fa-video"></i> Управление камерой</h4>
+                            <div class="button-example success">
+                                <i class="fas fa-video"></i>
+                                Включить камеру
+                            </div>
+                            <div class="button-example danger">
+                                <i class="fas fa-video-slash"></i>
+                                Выключить камеру
+                            </div>
+                        </div>
+
+                        <div class="control-item">
+                            <h4><i class="fas fa-camera"></i> Создание стоп-кадра</h4>
+                            <div class="button-example secondary">
+                                <i class="fas fa-pause"></i>
+                                Создать стоп-кадр
+                            </div>
+                            <p>Нажмите для фиксации изображения и проверки результата</p>
+                        </div>
+
+                        <div class="control-item">
+                            <h4><i class="fas fa-cog"></i> Настройки изображения</h4>
+                            <div class="button-example secondary">
+                                <i class="fas fa-sliders-h"></i>
+                                Настройки камеры
+                            </div>
+                            <p>Позволяет настроить яркость, контраст, насыщенность и резкость</p>
+                        </div>
+
+                        <div class="control-item">
+                            <h4><i class="fas fa-plus"></i> Добавление в отчёт</h4>
+                            <div class="button-example success">
+                                <i class="fas fa-plus"></i>
+                                Добавить в отчёт
+                            </div>
+                            <p>Становится активной после создания стоп-кадра</p>
+                        </div>
+
+                        <div class="control-item">
+                            <h4><i class="fas fa-th"></i> Отображение сетки</h4>
+                            <div class="button-example secondary">
+                                <i class="fas fa-th"></i>
+                                Показать сетку
+                            </div>
+                            <p>Включает/выключает отображение сетки ответов</p>
+                        </div>
+
+                        <div class="control-item">
+                            <h4><i class="fas fa-sync"></i> Обновление ответов</h4>
+                            <div class="button-example primary">
+                                <i class="fas fa-sync"></i>
+                                Обновить ответы
+                            </div>
+                            <p>Применяет новые правильные ответы</p>
+                        </div>
+                    </div>
+
+                    <div class="hotkeys-info">
+                        <h4><i class="fas fa-keyboard"></i> Горячие клавиши</h4>
+                        <p>Для удобства работы доступны следующие сочетания клавиш:</p>
+                        <div class="hotkey-row">
+                            <div class="hotkey-badge">Space</div>
+                            <span class="hotkey-desc">Создать стоп-кадр для проверки результата</span>
+                        </div>
+                        <div class="hotkey-row">
+                            <div class="hotkey-badge">Alt + A</div>
+                            <span class="hotkey-desc">Добавить текущий результат в отчёт</span>
+                        </div>
+                        <div class="tip">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Использование горячих клавиш значительно ускоряет процесс проверки тестов!</span>
+                        </div>
+                    </div>
+
+                    <h3><i class="fas fa-eye"></i> Режимы отображения камеры</h3>
+                    <p>В приложении доступна функция переключения режима отображения камеры, которая особенно полезна при работе с тестами, содержащими большое количество вопросов:</p>
+                    
+                    <div class="controls-grid">
+                        <div class="control-item">
+                            <h4><i class="fas fa-image"></i> Обычный режим</h4>
+                            <p>Показывает полное изображение с камеры. Удобен для общего контроля и позиционирования бланка.</p>
+                            <div class="button-example secondary">
+                                <i class="fas fa-toggle-off"></i>
+                                Режим наложения: ВЫКЛ
+                            </div>
+                        </div>
+
+                        <div class="control-item">
+                            <h4><i class="fas fa-layer-group"></i> Режим наложения</h4>
+                            <p>Накладывает результаты распознавания поверх изображения с камеры, что упрощает проверку правильности распознавания ответов в тестах с большим количеством вопросов.</p>
+                            <div class="button-example primary">
+                                <i class="fas fa-toggle-on"></i>
+                                Режим наложения: ВКЛ
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <strong><i class="fas fa-lightbulb"></i> Совет</strong>
+                        <p>Используйте переключение режимов для удобной проверки тестов разного формата. Режим наложения особенно эффективен при работе с длинными тестами, так как позволяет лучше видеть результаты распознавания.</p>
+                    </div>
+
+                    <div class="tip-box">
+                        <strong><i class="fas fa-info-circle"></i> Важно</strong>
+                        <p>Для наилучшего результата распознавания:</p>
+                        <ul class="feature-list">
+                            <li>Убедитесь, что бланк хорошо освещен</li>
+                            <li>Избегайте бликов и теней на бланке</li>
+                            <li>Располагайте бланк параллельно камере</li>
+                            <li>Используйте настройки камеры для улучшения качества изображения</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="instruction-section" id="batch-processing">
+                    <h2 id="batch-processing"><i class="fas fa-images"></i> Пакетная обработка</h2>
+                    
+                    <div class="info-box">
+                        <div class="info-box-title">
+                            <i class="fas fa-info-circle"></i>
+                            <span>О пакетной обработке</span>
+                        </div>
+                        <div class="info-box-content">
+                            Пакетная обработка позволяет проверить несколько тестов одновременно, что значительно экономит время при проверке большого количества работ. Данный режим предназначен для проверки тестов с единичным выбором ответа в каждом вопросе.
+                        </div>
+                    </div>
+
+                    <div class="step-by-step">
+                        <div class="step">
+                            <h3><i class="fas fa-cog"></i> 1. Настройка параметров теста</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-list-ol"></i>
+                                        <span>Количество вопросов</span>
+                                    </div>
+                                    <p>От 1 до 50 вопросов</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-check-square"></i>
+                                        <span>Варианты ответов</span>
+                                    </div>
+                                    <p>От 1 до 10 вариантов</p>
+                                </div>
+                            </div>
+                            <ul>
+                                <li>Укажите количество вопросов в тесте</li>
+                                <li>Выберите количество вариантов ответов</li>
+                                <li>Введите правильные ответы в сетку</li>
+                            </ul>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-upload"></i> 2. Загрузка изображений</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example primary">
+                                        <i class="fas fa-file-upload"></i>
+                                        <span>Загрузить файлы</span>
+                                    </div>
+                                    <p>JPG, PNG форматы</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example secondary">
+                                        <i class="fas fa-images"></i>
+                                        <span>Предпросмотр</span>
+                                    </div>
+                                    <p>Проверка загруженных файлов</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-check-circle"></i> 3. Обработка и результаты</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example success">
+                                        <i class="fas fa-play"></i>
+                                        <span>Начать обработку</span>
+                                    </div>
+                                    <p>Запуск проверки всех тестов</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example primary">
+                                        <i class="fas fa-file-export"></i>
+                                        <span>Отправить в отчёт</span>
+                                    </div>
+                                    <p>Сохранение результатов</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="instruction-section" id="multiple-choice">
+                    <h2 id="multiple-choice"><i class="fas fa-tasks"></i> Множественный выбор</h2>
+                    
+                    <div class="info-box">
+                        <div class="info-box-title">
+                            <i class="fas fa-info-circle"></i>
+                            <span>О множественном выборе</span>
+                        </div>
+                        <div class="info-box-content">
+                            Раздел множественного выбора специально разработан для проверки тестов, где на один вопрос может быть несколько правильных ответов. Это особенно полезно для сложных вопросов, требующих выбора нескольких вариантов или для вопросов с частично правильными ответами. В отличие от пакетной обработки, этот режим позволяет работать с тестами, где ученик может отметить более одного варианта ответа на каждый вопрос. Система также поддерживает проверку тестов, расположенных в два столбца, что особенно удобно для тестов с большим количеством вопросов.
+                        </div>
+                    </div>
+
+                    <div class="step-by-step">
+                        <div class="step">
+                            <h3><i class="fas fa-columns"></i> 1. Формат теста</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-columns"></i>
+                                        <span>Один столбец</span>
+                                    </div>
+                                    <p>Стандартный формат</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-columns"></i>
+                                        <span>Два столбца</span>
+                                    </div>
+                                    <p>Для длинных тестов</p>
+                                </div>
+                            </div>
+                            <div class="tip-box">
+                                <strong><i class="fas fa-lightbulb"></i> Совет</strong>
+                                <p>Используйте двухстолбцовый формат для тестов с большим количеством вопросов (более 20). Это делает бланк более компактным и удобным для заполнения.</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-check-double"></i> 2. Выбор правильных ответов</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example primary">
+                                        <i class="fas fa-check-square"></i>
+                                        <span>Выбор ответов</span>
+                                    </div>
+                                    <p>Отметьте все правильные варианты</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example secondary">
+                                        <i class="fas fa-undo"></i>
+                                        <span>Сброс выбора</span>
+                                    </div>
+                                    <p>Для изменения ответов</p>
+                                </div>
+                            </div>
+                            <div class="tip-box">
+                                <strong><i class="fas fa-info-circle"></i> Важно</strong>
+                                <p>Для каждого вопроса можно выбрать несколько правильных ответов. Система автоматически подсчитает частичные баллы за правильно выбранные варианты.</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-save"></i> 3. Сохранение и загрузка критериев</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example primary">
+                                        <i class="fas fa-save"></i>
+                                        <span>Сохранить критерии</span>
+                                    </div>
+                                    <p>Сохранить настройки в JSON</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example secondary">
+                                        <i class="fas fa-upload"></i>
+                                        <span>Загрузить критерии</span>
+                                    </div>
+                                    <p>Загрузить из JSON файла</p>
+                                </div>
+                            </div>
+                            <div class="tip-box">
+                                <strong><i class="fas fa-lightbulb"></i> Совет</strong>
+                                <p>Сохраняйте критерии проверки в JSON файл для каждого варианта теста. Это позволит быстро переключаться между разными вариантами без необходимости заново отмечать правильные ответы.</p>
+                            </div>
+                            <div class="info-box">
+                                <div class="info-box-title">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Что сохраняется в файл</span>
+                                </div>
+                                <div class="info-box-content">
+                                    <ul class="feature-list">
+                                        <li>Количество вопросов и вариантов ответов</li>
+                                        <li>Режим отображения (один или два столбца)</li>
+                                        <li>Режим проверки (строгий или частичный)</li>
+                                        <li>Все отмеченные правильные ответы</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-balance-scale"></i> 4. Режимы проверки</h3>
+                            <div class="controls-grid">
+                                <div class="control-item">
+                                    <h4><i class="fas fa-check-circle"></i> Строгий режим</h4>
+                                    <p>Вопрос считается правильным только если выбраны все правильные ответы и не выбраны неправильные</p>
+                                </div>
+                                <div class="control-item">
+                                    <h4><i class="fas fa-percentage"></i> Частичный режим</h4>
+                                    <p>Баллы начисляются пропорционально количеству правильно выбранных ответов</p>
+                                </div>
+                            </div>
+                            <div class="tip-box">
+                                <strong><i class="fas fa-lightbulb"></i> Совет</strong>
+                                <p>Строгий режим лучше использовать для вопросов, где все ответы должны быть выбраны правильно. Частичный режим подходит для вопросов с разным количеством правильных ответов.</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-upload"></i> 5. Загрузка и обработка</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example primary">
+                                        <i class="fas fa-file-upload"></i>
+                                        <span>Загрузить файлы</span>
+                                    </div>
+                                    <p>JPG, PNG форматы</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example success">
+                                        <i class="fas fa-play"></i>
+                                        <span>Начать обработку</span>
+                                    </div>
+                                    <p>Проверка ответов</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-chart-bar"></i> 6. Результаты проверки</h3>
+                            <div class="info-box">
+                                <div class="info-box-title">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Информация о результатах</span>
+                                </div>
+                                <div class="info-box-content">
+                                    <p>Для каждого вопроса система показывает:</p>
+                                    <ul class="feature-list">
+                                        <li>Выбранные учеником варианты ответов</li>
+                                        <li>Правильные варианты ответов</li>
+                                        <li>Количество правильно выбранных ответов</li>
+                                        <li>Процент правильных ответов</li>
+                                        <li>Балл за вопрос</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <strong><i class="fas fa-exclamation-triangle"></i> Важные моменты</strong>
+                        <ul class="feature-list">
+                            <li>При использовании строгого режима ученик должен выбрать все правильные ответы для получения балла за вопрос</li>
+                            <li>В частичном режиме баллы начисляются пропорционально количеству правильно выбранных ответов</li>
+                            <li>Если ученик выбирает все варианты ответов, вопрос автоматически считается неправильным</li>
+                            <li>Система учитывает как правильно выбранные, так и неправильно выбранные ответы</li>
+                            <li>Для каждого вопроса можно установить разное количество правильных ответов</li>
+                            <li>При использовании двухстолбцового формата система автоматически распределяет вопросы между столбцами</li>
+                            <li>Для корректной работы с двухстолбцовым форматом важно обеспечить четкое разделение между столбцами на бланке</li>
+                        </ul>
+                    </div>
+
+                    <div class="tip-box">
+                        <strong><i class="fas fa-star"></i> Рекомендации по использованию</strong>
+                        <ul class="feature-list">
+                            <li>Перед началом проверки убедитесь, что все правильные ответы отмечены корректно</li>
+                            <li>Используйте строгий режим для вопросов, где важна точность всех ответов</li>
+                            <li>Частичный режим лучше подходит для вопросов с разным количеством правильных ответов</li>
+                            <li>Проверяйте результаты каждого теста перед отправкой в отчет</li>
+                            <li>При необходимости можно изменить режим проверки и перезапустить обработку</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="instruction-section" id="constructor">
+                    <h2 id="constructor"><i class="fas fa-edit"></i> Конструктор тестов</h2>
+                    
+                    <div class="info-box">
+                        <div class="info-box-title">
+                            <i class="fas fa-info-circle"></i>
+                            <span>О конструкторе тестов</span>
+                        </div>
+                        <div class="info-box-content">
+                            Конструктор тестов позволяет создавать собственные бланки OMR с настраиваемым количеством вопросов и вариантов ответов. Вы можете настроить внешний вид бланка и сохранить его в формате PDF или изображения. Система поддерживает создание как одностолбцовых, так и двухстолбцовых бланков, что особенно удобно для тестов с большим количеством вопросов.
+                        </div>
+                    </div>
+
+                    <div class="step-by-step">
+                        <div class="step">
+                            <h3><i class="fas fa-columns"></i> 1. Выбор формата бланка</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-columns"></i>
+                                        <span>Один столбец</span>
+                                    </div>
+                                    <p>Стандартный формат</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-columns"></i>
+                                        <span>Два столбца</span>
+                                    </div>
+                                    <p>Для длинных тестов</p>
+                                </div>
+                            </div>
+                            <div class="tip-box">
+                                <strong><i class="fas fa-lightbulb"></i> Совет</strong>
+                                <p>Двухстолбцовый формат идеально подходит для тестов с 20-50 вопросами. Это делает бланк более компактным и удобным для заполнения, при этом сохраняя хорошую читаемость.</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-font"></i> 2. Настройка текстовых элементов</h3>
+                            <ul>
+                                <li>Заголовок листа - название теста или работы</li>
+                                <li>Описание - краткая инструкция или дополнительная информация</li>
+                                <li>Поля для заполнения:
+                                    <ul>
+                                        <li>ФИО учащегося</li>
+                                        <li>Дата проведения</li>
+                                        <li>Предмет</li>
+                                        <li>Инструкция по заполнению</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-sliders-h"></i> 3. Стилизация бланка</h3>
+                            <div class="controls-grid">
+                                <div class="control-item">
+                                    <h4><i class="fas fa-border-style"></i> Толщина рамки</h4>
+                                    <p>Настройка толщины рамки вокруг области ответов (1-10px)</p>
+                                </div>
+                                <div class="control-item">
+                                    <h4><i class="fas fa-search-plus"></i> Масштаб</h4>
+                                    <p>Изменение размера области ответов (50-200%)</p>
+                                </div>
+                                <div class="control-item">
+                                    <h4><i class="fas fa-text-height"></i> Размер шрифта</h4>
+                                    <p>Настройка размера текста (10-30px)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-eye"></i> 4. Управление видимостью элементов</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-check-square"></i>
+                                        <span>Заголовок листа</span>
+                                    </div>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-check-square"></i>
+                                        <span>Описание</span>
+                                    </div>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-check-square"></i>
+                                        <span>ФИО</span>
+                                    </div>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example">
+                                        <i class="fas fa-check-square"></i>
+                                        <span>Дата</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tip-box">
+                                <strong><i class="fas fa-info-circle"></i> Важно</strong>
+                                <p>Вы можете скрыть любые элементы бланка, которые не требуются для вашего теста. Все изменения отображаются в режиме реального времени.</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-mouse-pointer"></i> 5. Интерактивные возможности</h3>
+                            <ul>
+                                <li>Перетаскивание элементов:
+                                    <ul>
+                                        <li>Используйте иконку <i class="fas fa-grip-vertical"></i> для перемещения блоков</li>
+                                        <li>Доступно для заголовка, информации об ученике и области ответов</li>
+                                    </ul>
+                                </li>
+                                <li>Масштабирование области ответов:
+                                    <ul>
+                                        <li>Используйте колесико мыши для изменения масштаба</li>
+                                        <li>Перетаскивайте область ответов для изменения положения</li>
+                                    </ul>
+                                </li>
+                                <li>Скрытие кружков:
+                                    <ul>
+                                        <li>Кликните на кружок, чтобы скрыть его</li>
+                                        <li>Удобно для создания тестов с разным количеством вариантов ответов</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="step">
+                            <h3><i class="fas fa-save"></i> 6. Сохранение бланка</h3>
+                            <div class="button-grid">
+                                <div class="button-example-container">
+                                    <div class="button-example success">
+                                        <i class="fas fa-file-pdf"></i>
+                                        <span>Сохранить PDF</span>
+                                    </div>
+                                    <p>Для печати и распространения</p>
+                                </div>
+                                <div class="button-example-container">
+                                    <div class="button-example secondary">
+                                        <i class="fas fa-file-image"></i>
+                                        <span>Сохранить изображение</span>
+                                    </div>
+                                    <p>Для цифрового использования</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <strong><i class="fas fa-star"></i> Рекомендации по использованию</strong>
+                        <ul class="feature-list">
+                            <li>Для корректной работы с конструктором рекомендуется использовать версию для ПК</li>
+                            <li>Создавайте разные варианты одного теста, меняя порядок вопросов</li>
+                            <li>Используйте чёткие и понятные инструкции для учащихся</li>
+                            <li>Проверяйте правильность отображения всех элементов перед печатью</li>
+                            <li>Сохраняйте копии бланков в обоих форматах (PDF и изображение)</li>
+                            <li>При создании двухстолбцового бланка убедитесь, что между столбцами достаточно пространства</li>
+                            <li>Для двухстолбцового формата рекомендуется использовать альбомную ориентацию листа</li>
+                            <li>При печати двухстолбцового бланка проверьте, что разделительная линия между столбцами четко видна</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="instruction-section" id="reports">
+                    <h2 id="reports"><i class="fas fa-chart-bar"></i> Работа с отчётами</h2>
+
+                    <div class="info-box">
+                        <div class="info-box-title">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Об отчётах</span>
+                        </div>
+                        <div class="info-box-content">
+                            Раздел отчётов предоставляет полную статистику по проверенным тестам, включая графики, диаграммы и возможность экспорта данных.
+                        </div>
+                    </div>
+
+                    <div class="charts-preview">
+                        <div class="chart-example">
+                            <i class="fas fa-chart-pie"></i>
+                            <h4>Распределение оценок</h4>
+                            <p>Круговая диаграмма с процентным соотношением оценок</p>
+                        </div>
+                        <div class="chart-example">
+                            <i class="fas fa-chart-line"></i>
+                            <h4>Динамика результатов</h4>
+                            <p>График изменения успеваемости</p>
+                        </div>
+                        <div class="chart-example">
+                            <i class="fas fa-chart-bar"></i>
+                            <h4>Статистика ответов</h4>
+                            <p>Анализ правильных и неправильных ответов</p>
+                        </div>
+                    </div>
+
+                    <div class="button-grid">
+                        <div class="button-example-container">
+                            <div class="button-example success">
+                                <i class="fas fa-file-excel"></i>
+                                <span>Скачать XLSX</span>
+                            </div>
+                            <p>Экспорт в Excel</p>
+                        </div>
+                        <div class="button-example-container">
+                            <div class="button-example danger">
+                                <i class="fas fa-trash"></i>
+                                <span>Сбросить отчёты</span>
+                            </div>
+                            <p>Очистка всех данных</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="instruction-section" id="grading-criteria">
+                    <h2 id="grading-criteria"><i class="fas fa-graduation-cap"></i> Настройка критериев оценивания</h2>
+
+                    <div class="info-box">
+                        <div class="info-box-title">
+                            <i class="fas fa-info-circle"></i>
+                            <span>О критериях оценивания</span>
+                        </div>
+                        <div class="info-box-content">
+                            Система позволяет гибко настраивать критерии оценивания тестов, устанавливая свои диапазоны для каждой оценки.
+                        </div>
+                    </div>
+
+                    <table class="criteria-table">
+                        <thead>
+                            <tr>
+                                <th>Оценка</th>
+                                <th>Диапазон</th>
+                                <th>Уровень знаний</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>5 (отлично)</td>
+                                <td>90-100%</td>
+                                <td>Высокий уровень</td>
+                            </tr>
+                            <tr>
+                                <td>4 (хорошо)</td>
+                                <td>70-89%</td>
+                                <td>Хороший уровень</td>
+                            </tr>
+                            <tr>
+                                <td>3 (удовлетворительно)</td>
+                                <td>50-69%</td>
+                                <td>Базовый уровень</td>
+                            </tr>
+                            <tr>
+                                <td>2 (неудовлетворительно)</td>
+                                <td>0-49%</td>
+                                <td>Недостаточный уровень</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="button-grid">
+                        <div class="button-example-container">
+                            <div class="button-example primary">
+                                <i class="fas fa-sliders-h"></i>
+                                <span>Изменить критерии</span>
+                            </div>
+                            <p>Настройка диапазонов</p>
+                        </div>
+                        <div class="button-example-container">
+                            <div class="button-example success">
+                                <i class="fas fa-save"></i>
+                                <span>Применить</span>
+                            </div>
+                            <p>Сохранение изменений</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="instructions-section">
+                    <h2><i class="fas fa-file-alt"></i> Работа с бланком ответов</h2>
+                    
+                    <div class="info-box">
+                        <div class="info-box-title">
+                            <i class="fas fa-info-circle info-icon"></i>
+                            <span>Важно</span>
+                        </div>
+                        <div class="info-box-content">
+                            Для корректной работы сканера необходимо использовать правильный формат бланка ответов.
+                        </div>
+                    </div>
+
+                    <div class="template-example">
+                        <h3>Пример бланка ответов:</h3>
+                        <div class="answer-sheet-example">
+                            <div class="form-field">
+                                <span class="form-field-label">ФИО:</span>
+                                <div class="form-field-input"></div>
+                            </div>
+                            <div class="form-field">
+                                <span class="form-field-label">Дата:</span>
+                                <div class="form-field-input"></div>
+                            </div>
+                            <div class="form-field">
+                                <span class="form-field-label">Предмет:</span>
+                                <div class="form-field-input"></div>
+                            </div>
+                            <div class="form-field">
+                                <span class="form-field-label">Инструкция:</span>
+                                <div class="form-field-input"></div>
+                            </div>
+                            <table class="answer-table">
+                                <tr>
+                                    <td><div class="circle empty"></div></td>
+                                    <td><div class="circle empty"></div></td>
+                                    <td><div class="circle empty"></div></td>
+                                    <td><div class="circle empty"></div></td>
+                                    <td><div class="circle empty"></div></td>
+                                </tr>
+                                <tr>
+                                    <td><div class="circle empty"></div></td>
+                                    <td><div class="circle empty"></div></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><div class="circle empty"></div></td>
+                                    <td><div class="circle empty"></div></td>
+                                    <td><div class="circle empty"></div></td>
+                                    <td><div class="circle empty"></div></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><div class="circle empty"></div></td>
+                                    <td><div class="circle empty"></div></td>
+                                    <td><div class="circle empty"></div></td>
+                                    <td><div class="circle empty"></div></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><div class="circle empty"></div></td>
+                                    <td><div class="circle empty"></div></td>
+                                    <td><div class="circle empty"></div></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="download-section">
+                            <a href="https://github.com/mrKamanov/TscanSDK/raw/master/assets/OMRBubbles.ttf" class="download-button" download>
+                                <i class="fas fa-font"></i>
+                                Скачать шрифт
+                            </a>
+                            <a href="https://github.com/mrKamanov/TscanSDK/raw/master/assets/Образец%20бланка.docx" class="download-button" download>
+                                <i class="fas fa-file-word"></i>
+                                Скачать бланк
+                            </a>
+                        </div>
+
+                        <div class="requirements-list">
+                            <h3>Требования к бланку:</h3>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Оптимальное количество вопросов: от 5 до 20</li>
+                                <li><i class="fas fa-check"></i> Режим пакетной обработки работает только с тестами, где в каждом вопросе нужно выбрать один правильный ответ</li>
+                                <li><i class="fas fa-check"></i> Режим множественного выбора позволяет проверять тесты, где в вопросах можно отметить несколько правильных ответов</li>
+                                <li><i class="fas fa-check"></i> При разном количестве вариантов ответов необходимо стереть неиспользуемые ячейки</li>
+                                <li><i class="fas fa-check"></i> При изменении количества вопросов нужно соответственно изменить количество строк</li>
+                                <li><i class="fas fa-check"></i> Важно обозначить границу таблицы для корректного распознавания</li>
+                                <li><i class="fas fa-check"></i> Перед проверкой теста с множественным выбором обязательно включите соответствующий режим в настройках</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Кнопка возврата наверх -->
+    <button id="scroll-to-top" class="scroll-to-top" title="Вернуться наверх">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('.answer-table tr');
+            const numbers = [
+                [1, 2, 3, 4, 5],
+                [1, 2],
+                [1, 2, 3, 4],
+                [1, 2, 3, 4],
+                [1, 2, 3]
+            ];
+
+            rows.forEach((row, rowIndex) => {
+                if (numbers[rowIndex]) {
+                    const circles = row.querySelectorAll('.circle.empty');
+                    circles.forEach((circle, circleIndex) => {
+                        if (numbers[rowIndex][circleIndex] !== undefined) {
+                            circle.setAttribute('data-number', numbers[rowIndex][circleIndex]);
+                        }
+                    });
+                }
+            });
+        });
+
+        // Функционал кнопки возврата наверх
+        const scrollToTopButton = document.getElementById('scroll-to-top');
+
+        // Показать/скрыть кнопку при прокрутке
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollToTopButton.classList.add('show');
+            } else {
+                scrollToTopButton.classList.remove('show');
+            }
+        });
+
+        // Плавная прокрутка наверх при клике
+        scrollToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html> 

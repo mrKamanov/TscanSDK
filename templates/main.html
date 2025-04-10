@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Главное меню сканера тестов">
+    <meta name="theme-color" content="#2E3440">
+    <title>Сканер тестов - Главное меню</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/variables.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/qr.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 24px;
+        }
+
+        .decorative-elements {
+            flex: 1;
+            background-color: var(--background-color);
+        }
+
+        .menu-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer {
+            width: fit-content;
+            padding: 16px 32px;
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            margin: 20px auto;
+            border-radius: var(--border-radius);
+        }
+
+        .school-name {
+            font-size: 1.1em;
+            color: var(--text-color);
+        }
+
+        .contact-info {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .email-link, .github-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .email-link:hover, .github-link:hover {
+            color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .github-link i {
+            font-size: 24px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .main-content {
+                padding: 24px 16px;
+            }
+
+            .footer {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+                padding: 16px;
+                width: fit-content;
+                margin: 16px auto;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .email-link {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <main class="main-content">
+            <div class="decorative-elements">
+                <div class="decorative-letters">
+                    <span class="check">✓</span>
+                    <span class="circle-letter" data-letter="А"></span>
+                    <span class="circle-letter" data-letter="Б"></span>
+                    <span class="circle-letter" data-letter="В"></span>
+                    <span class="circle-letter" data-letter="Г"></span>
+                    <span class="circle-letter" data-letter="Д"></span>
+                    <span class="cross">✕</span>
+                </div>
+            </div>
+            
+            <!-- Верхняя правая группа -->
+            <div class="decorative-letters">
+                <span class="check">✓</span>
+                <span class="circle-letter" data-letter="1"></span>
+                <span class="circle-letter" data-letter="2"></span>
+                <span class="circle-letter" data-letter="3"></span>
+                <span class="cross">✕</span>
+            </div>
+
+            <!-- Верхняя левая группа -->
+            <div class="decorative-icons top-left">
+                <span class="icon">📝</span>
+                <span class="icon">✎</span>
+                <span class="icon">📋</span>
+            </div>
+
+            <!-- Нижняя правая группа -->
+            <div class="decorative-icons bottom-right">
+                <span class="icon">📚</span>
+                <span class="icon">🎓</span>
+                <span class="icon">✏️</span>
+            </div>
+
+            <div class="menu-container">
+                <h1 class="main-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    Сканер тестов
+                </h1>
+                <div class="cards-grid">
+                    <a href="/scan" class="menu-card">
+                        <div class="card-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h2>Сканирование в реальном времени</h2>
+                        <p>Проверка тестов через камеру устройства с мгновенным результатом</p>
+                        <div class="card-footer">
+                            <span class="card-action">Открыть <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+
+                    <a href="/batch" class="menu-card">
+                        <div class="card-icon">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <h2>Пакетная обработка</h2>
+                        <p>Загрузка и обработка нескольких тестов одновременно</p>
+                        <div class="card-footer">
+                            <span class="card-action">Открыть <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+
+                    <a href="/reports" class="menu-card">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h2>Отчеты</h2>
+                        <p>Просмотр и анализ результатов тестирования</p>
+                        <div class="card-footer">
+                            <span class="card-action">Открыть <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+
+                    <a href="/instructions" class="menu-card">
+                        <div class="card-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h2>Инструкция</h2>
+                        <p>Подробное руководство по использованию системы</p>
+                        <div class="card-footer">
+                            <span class="card-action">Открыть <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+
+                    <a href="/constructor" class="menu-card">
+                        <div class="card-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h2>Конструктор бланков</h2>
+                        <p>Создание и настройка бланков для тестирования</p>
+                        <div class="card-footer">
+                            <span class="card-action">Открыть <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+
+                    <a href="/multiple" class="menu-card">
+                        <div class="card-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <h2>Множественный выбор</h2>
+                        <p>Проверка тестов с несколькими правильными ответами</p>
+                        <div class="card-footer">
+                            <span class="card-action">Открыть <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+
+                <div style="margin-top: 48px; display: flex; justify-content: center;">
+                    <div class="menu-card" id="qr-card" style="max-width: 300px; padding: 16px 24px; display: flex; align-items: center; gap: 16px; cursor: pointer; background: rgba(136, 192, 208, 0.1); border: 1px solid rgba(136, 192, 208, 0.2); transition: all 0.3s ease;">
+                        <div class="card-icon" style="margin: 0; padding: 12px; background: transparent;">
+                            <i class="fas fa-qrcode" style="color: var(--secondary-color);"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <h2 style="margin: 0 0 4px 0; font-size: 1.1em; color: var(--text-color);">Открыть на телефоне</h2>
+                            <p style="margin: 0; font-size: 0.9em; opacity: 0.7; color: var(--text-color);">Сгенерировать QR-код для доступа</p>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color: var(--secondary-color); opacity: 0.7; font-size: 1.2em;"></i>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="school-name">МБОУ СОШ №14</div>
+            <div class="contact-info">
+                <a href="mailto:mr.kamanov@yandex.ru" class="email-link">
+                    <i class="fas fa-envelope"></i>
+                    mr.kamanov@yandex.ru
+                </a>
+                <a href="https://github.com/mrKamanov/TscanSDK" class="github-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://t.me/+3LrwyvOCbQMwMDIy" class="github-link" target="_blank">
+                    <i class="fab fa-telegram"></i>
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Модальное окно с QR-кодом -->
+    <div class="qr-modal" id="qr-modal">
+        <div class="qr-modal-content">
+            <div class="qr-modal-close" id="qr-modal-close">
+                <i class="fas fa-times"></i>
+            </div>
+            <h2 class="qr-modal-title">
+                <i class="fas fa-mobile-alt"></i>
+                Мобильный доступ
+            </h2>
+            <p class="qr-modal-text">
+                Отсканируйте QR-код камерой вашего мобильного устройства, чтобы открыть приложение. Убедитесь, что ваше устройство подключено к той же сети Wi-Fi.
+            </p>
+            <div class="qr-code-container" id="qr-code"></div>
+            <div class="qr-modal-url" id="qr-url"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const qrCard = document.getElementById('qr-card');
+            const qrModal = document.getElementById('qr-modal');
+            const qrModalClose = document.getElementById('qr-modal-close');
+            const qrCodeContainer = document.getElementById('qr-code');
+            const qrUrlElement = document.getElementById('qr-url');
+
+            // Функция для получения URL для мобильного доступа
+            async function getMobileUrl() {
+                try {
+                    const response = await fetch('/get_mobile_url');
+                    const data = await response.json();
+                    return data.url;
+                } catch (error) {
+                    console.error('Ошибка при получении URL:', error);
+                    return window.location.href;
+                }
+            }
+
+            // Открываем модальное окно при клике на карточку
+            qrCard.addEventListener('click', async function() {
+                // Получаем URL для мобильного доступа
+                const mobileUrl = await getMobileUrl();
+                
+                // Очищаем контейнер QR-кода
+                qrCodeContainer.innerHTML = '';
+                
+                // Создаем QR-код
+                new QRCode(qrCodeContainer, {
+                    text: mobileUrl,
+                    width: 256,
+                    height: 256,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+
+                // Отображаем URL
+                qrUrlElement.textContent = mobileUrl;
+                
+                // Показываем модальное окно
+                qrModal.style.display = 'flex';
+            });
+
+            // Закрываем модальное окно при клике на крестик
+            qrModalClose.addEventListener('click', function() {
+                qrModal.style.display = 'none';
+            });
+
+            // Закрываем модальное окно при клике вне его области
+            qrModal.addEventListener('click', function(e) {
+                if (e.target === qrModal) {
+                    qrModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
