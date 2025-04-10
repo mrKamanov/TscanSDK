@@ -389,7 +389,7 @@ class MultipleProcessor:
             # Создаем наложение на оригинальное изображение
             overlay_image = self._create_overlay_image(
                 image,
-                result_img,
+                result_img,  # Передаем перспективное изображение для получения матрицы трансформации
                 questions,
                 choices,
                 correct_answers,
@@ -397,7 +397,7 @@ class MultipleProcessor:
             )
 
             # Определяем целевую высоту для обоих изображений
-            target_height = 800
+            target_height = 800  # Фиксированная высота для комфортного просмотра
             
             # Масштабируем перспективное изображение
             perspective_aspect_ratio = result_img.shape[1] / result_img.shape[0]
@@ -412,8 +412,8 @@ class MultipleProcessor:
             # Объединяем изображения
             final_image = np.hstack((result_image_resized, overlay_image_resized))
             
-            
-            max_width = 2000
+            # Проверяем, не слишком ли широкое получилось изображение
+            max_width = 2000  # Максимальная допустимая ширина
             if final_image.shape[1] > max_width:
                 # Если изображение слишком широкое, уменьшаем его, сохраняя пропорции
                 scale_factor = max_width / final_image.shape[1]
@@ -491,8 +491,8 @@ class MultipleProcessor:
             
             # Создаем тестовые точки для определения размера ячейки на оригинальном изображении
             test_points = np.array([
-                [[0, 0]],
-                [[cell_width, cell_height]] 
+                [[0, 0]],  # Верхний левый угол первой ячейки
+                [[cell_width, cell_height]]  # Нижний правый угол первой ячейки
             ], dtype=np.float32)
             
             # Преобразуем тестовые точки в координаты оригинального изображения
@@ -557,7 +557,7 @@ class MultipleProcessor:
                             result,
                             (int(point[0]), int(point[1])),
                             mark_type,
-                            scaled_cell_size
+                            scaled_cell_size  # Используем масштабированный размер
                         )
             
             return result

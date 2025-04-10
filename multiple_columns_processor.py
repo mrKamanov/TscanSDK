@@ -44,12 +44,12 @@ class MultipleColumnsProcessor:
             
             # Увеличиваем разрешение входного изображения
             height, width = image.shape[:2]
-            target_height = 3600
+            target_height = 3600  # Увеличиваем целевую высоту для лучшего качества
             scale_factor = target_height / height
             target_width = int(width * scale_factor)
             
-          
-            max_width = 4800
+            # Проверяем, не слишком ли большое получится изображение
+            max_width = 4800  # Увеличиваем максимальную ширину
             if target_width > max_width:
                 scale_factor = max_width / width
                 target_height = int(height * scale_factor)
@@ -239,7 +239,7 @@ class MultipleColumnsProcessor:
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             
             # Применяем адаптивное размытие по Гауссу
-            kernel_size = max(3, min(gray.shape) // 300)
+            kernel_size = max(3, min(gray.shape) // 300)  # Уменьшаем делитель для более точного размытия
             if kernel_size % 2 == 0:
                 kernel_size += 1
             blurred = cv2.GaussianBlur(gray, (kernel_size, kernel_size), 0)
@@ -292,7 +292,7 @@ class MultipleColumnsProcessor:
         # Проверяем, что контуры примерно одинакового размера
         area1 = cv2.contourArea(contours[0])
         area2 = cv2.contourArea(contours[1])
-        if min(area1, area2) / max(area1, area2) < 0.8:
+        if min(area1, area2) / max(area1, area2) < 0.8:  # допускаем 20% разницу
             raise ValueError("Контуры значительно отличаются по размеру")
             
         # Получаем ограничивающие прямоугольники для контуров
@@ -314,7 +314,8 @@ class MultipleColumnsProcessor:
             width = int(rect[1][0])
             height = int(rect[1][1])
             
-            
+            # Если прямоугольник повернут более чем на 45 градусов,
+            # меняем местами ширину и высоту
             if rect[2] < -45:
                 width, height = height, width
                 
@@ -351,12 +352,14 @@ class MultipleColumnsProcessor:
         """
         rect = np.zeros((4, 2), dtype="float32")
         
-      
+        # Верхняя левая точка будет иметь наименьшую сумму
+        # Нижняя правая точка будет иметь наибольшую сумму
         s = pts.sum(axis=1)
         rect[0] = pts[np.argmin(s)]
         rect[2] = pts[np.argmax(s)]
         
-       
+        # Верхняя правая точка будет иметь наименьшую разность
+        # Нижняя левая точка будет иметь наибольшую разность
         diff = np.diff(pts, axis=1)
         rect[1] = pts[np.argmin(diff)]
         rect[3] = pts[np.argmax(diff)]
@@ -368,28 +371,28 @@ class MultipleColumnsProcessor:
         cellW, cellH = cell_size
         
         # Увеличиваем размер маркеров
-        mark_size = min(cellW, cellH) // 2 
-        thickness = max(3, min(cellW, cellH) // 15) 
+        mark_size = min(cellW, cellH) // 2  # Было // 3, делаем больше
+        thickness = max(3, min(cellW, cellH) // 15)  # Увеличиваем толщину линий
         circle_radius = mark_size + thickness
         
         colors = {
             'correct': {  
-                'fill': (0, 255, 0),
+                'fill': (0, 255, 0),  # Зеленый
                 'border': (0, 200, 0),
                 'mark': (255, 255, 255)
             },
             'partial': {  
-                'fill': (255, 165, 0),
+                'fill': (255, 165, 0),  # Оранжевый
                 'border': (200, 130, 0),
                 'mark': (255, 255, 255)
             },
             'incorrect': {  
-                'fill': (0, 0, 255),
+                'fill': (0, 0, 255),  # Меняем на синий для лучшей видимости
                 'border': (0, 0, 200),
                 'mark': (255, 255, 255)
             },
             'missed': {  
-                'fill': (255, 0, 0),
+                'fill': (255, 0, 0),  # Красный для пропущенных
                 'border': (200, 0, 0),
                 'mark': (255, 255, 255)
             }
@@ -401,11 +404,11 @@ class MultipleColumnsProcessor:
         color = colors[mark_type]
         
         # Рисуем круг с более толстой обводкой
-        cv2.circle(img, (cX, cY), circle_radius + 2, color['border'], -1)
-        cv2.circle(img, (cX, cY), circle_radius, color['fill'], -1)
+        cv2.circle(img, (cX, cY), circle_radius + 2, color['border'], -1)  # Внешняя обводка
+        cv2.circle(img, (cX, cY), circle_radius, color['fill'], -1)  # Заливка
         
         if mark_type in ['correct', 'partial']:
-            
+            # Увеличенная галочка
             points = np.array([
                 [cX - mark_size, cY],
                 [cX - mark_size//3, cY + mark_size//2],
@@ -414,7 +417,7 @@ class MultipleColumnsProcessor:
             cv2.polylines(img, [points], isClosed=False, color=(0, 0, 0), thickness=thickness*2)
             cv2.polylines(img, [points], isClosed=False, color=color['mark'], thickness=thickness)
         elif mark_type == 'incorrect':
-            
+            # Увеличенный крестик
             offset = mark_size // 2
             cv2.line(img, 
                     (cX - offset, cY - offset),
@@ -433,14 +436,14 @@ class MultipleColumnsProcessor:
                     (cX + offset, cY - offset),
                     color['mark'], thickness)
         elif mark_type == 'missed':
-            
+            # Увеличенный кружок для пропущенных
             inner_radius = mark_size//2
             cv2.circle(img, (cX, cY), inner_radius + 2, (0, 0, 0), -1)
             cv2.circle(img, (cX, cY), inner_radius, color['mark'], thickness)
 
     def showMultipleAnswers(self, img: np.ndarray, selected_answers: List[List[int]], correct_answers: List[List[int]], 
                            questions: int = 5, choices: int = 5) -> None:
-        
+        # Находим контур области с ответами
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
         contours, _ = cv2.findContours(
@@ -524,8 +527,8 @@ class MultipleColumnsProcessor:
                 255,
                 cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                 cv2.THRESH_BINARY_INV,
-                21, 
-                5    
+                21,  # Размер окна для адаптивной бинаризации
+                5    # Константа вычитания
             )
             
             # Применяем морфологические операции для уменьшения шума
@@ -554,8 +557,8 @@ class MultipleColumnsProcessor:
                     x_end = (c + 1) * cell_width
                     
                     # Определяем область ячейки с отступами
-                    margin_x = int(cell_width * 0.2)
-                    margin_y = int(cell_height * 0.2)
+                    margin_x = int(cell_width * 0.2)   # Увеличиваем отступ
+                    margin_y = int(cell_height * 0.2)  # Увеличиваем отступ
                     
                     cell = question_area[margin_y:cell_height-margin_y, 
                                       x_start+margin_x:x_end-margin_x]
@@ -569,7 +572,7 @@ class MultipleColumnsProcessor:
                     
                     if num_labels > 1:
                         # Фильтруем компоненты по размеру
-                        areas = stats[1:, cv2.CC_STAT_AREA] 
+                        areas = stats[1:, cv2.CC_STAT_AREA]  # Исключаем фон
                         if len(areas) > 0:
                             # Находим самую большую компоненту
                             max_area = max(areas)
@@ -577,7 +580,7 @@ class MultipleColumnsProcessor:
                             cell_area = cell.shape[0] * cell.shape[1]
                             area_ratio = max_area / cell_area
                             
-                            if 0.1 < area_ratio < 0.9: 
+                            if 0.1 < area_ratio < 0.9:  # Допустимый диапазон размеров отметки
                                 cell_areas.append(max_area)
                             else:
                                 cell_areas.append(0)
@@ -589,9 +592,9 @@ class MultipleColumnsProcessor:
                 # Находим максимальную площадь
                 max_area = max(cell_areas) if cell_areas else 0
                 
-                if max_area > 50:
-                    
-                    threshold = max_area * 0.4 
+                if max_area > 50:  # Уменьшаем минимальный размер для отметки
+                    # Находим все отметки, которые достаточно близки к максимальной площади
+                    threshold = max_area * 0.4  # Уменьшаем порог для определения отметки
                     potential_answers = [j for j, area in enumerate(cell_areas) if area > threshold]
                     
                     if len(potential_answers) > 0:
@@ -599,7 +602,7 @@ class MultipleColumnsProcessor:
                         if len(potential_answers) > 1:
                             max_size = max(cell_areas[j] for j in potential_answers)
                             # Оставляем только те отметки, которые достаточно близки к максимальной
-                            answers = [j for j in potential_answers if cell_areas[j] > max_size * 0.6] 
+                            answers = [j for j in potential_answers if cell_areas[j] > max_size * 0.6]  # Уменьшаем порог
                         else:
                             answers = potential_answers
                 
@@ -637,13 +640,14 @@ class MultipleColumnsProcessor:
             correct_count = 0
             correct_questions = []
             incorrect_questions = []
-            choices = 5 
+            choices = 5  # Количество вариантов ответа
             
             for i, (detected, correct) in enumerate(zip(detected_answers, correct_answers)):
                 selected_set = set(detected)
                 correct_set = set(correct)
                 
-                
+                # Проверяем случай, когда отмечено слишком много вариантов
+                # Но только если отмеченные ответы не совпадают с правильными
                 if selected_set != correct_set and len(detected) >= int(choices * 0.8):
                     incorrect_info = {
                         'question_number': i + 1,
@@ -656,8 +660,8 @@ class MultipleColumnsProcessor:
                     incorrect_questions.append(incorrect_info)
                     continue
 
-                
-                if len(detected) > len(correct) * 2:
+                # Проверяем случай, когда выбрано слишком много ответов относительно правильного количества
+                if len(detected) > len(correct) * 2:  # Если выбрано более чем в 2 раза больше ответов
                     incorrect_info = {
                         'question_number': i + 1,
                         'selected_answers': [x + 1 for x in sorted(detected)],
@@ -670,7 +674,7 @@ class MultipleColumnsProcessor:
                     continue
 
                 # Подсчитываем количество правильных ответов
-                correct_selected = len(selected_set & correct_set) 
+                correct_selected = len(selected_set & correct_set)  # Пересечение множеств
                 total_correct = len(correct_set)
                 
                 if strict_mode:
@@ -738,8 +742,8 @@ class MultipleColumnsProcessor:
             for col_idx, (box, rect) in enumerate(rects):
                 # Определяем количество вопросов для текущего столбца
                 # Для отображения используем одинаковое количество вопросов в обоих столбцах
-                display_questions = questions_first 
-                real_questions = questions_first if col_idx == 0 else questions_second 
+                display_questions = questions_first  # Всегда используем количество вопросов первого столбца для отображения
+                real_questions = questions_first if col_idx == 0 else questions_second  # Реальное количество вопросов для проверки
                 start_idx = questions_first if col_idx == 1 else 0
                 
                 # Получаем размеры ячейки в перспективе

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify, send_file
 from flask_socketio import SocketIO, emit
-from flask_cors import CORS 
+from flask_cors import CORS  # Добавляем поддержку CORS
 import cv2
 import base64
 import threading
@@ -13,9 +13,9 @@ import os
 import socket
 
 app = Flask(__name__)
-CORS(app)  
+CORS(app)  # Включаем CORS для всех маршрутов
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")  
+socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")  # Разрешаем все источники для Socket.IO
 
 # Инициализация процессоров
 multiple_processor = MultipleProcessor()
@@ -249,7 +249,7 @@ def handle_apply_settings(data):
         new_questions = int(data.get('questions', 0))
         new_choices = int(data.get('choices', 0))
 
-        
+        # Проверяем, что значения больше или равны 1
         if new_questions < 1 or new_choices < 1:
             emit('error', {'message': 'Количество вопросов и вариантов ответов должно быть не менее 1.'})
             return
@@ -420,7 +420,7 @@ def handle_batch_image(data):
         # Обработка изображения с включенным режимом наложения
         result_img, correct_count, score, incorrect_questions, grading = process_video_frame(
             img, data['questions'], data['choices'], data['correctAnswers'],
-            image_size=800, overlay_mode=True  
+            image_size=800, overlay_mode=True  # Включаем режим наложения
         )
 
         # Конвертируем результат обратно в base64
@@ -491,7 +491,7 @@ def get_local_ip():
     try:
         # Создаем временный сокет для определения основного сетевого интерфейса
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    
+        # Подключаемся к публичному DNS-серверу Google (это соединение не устанавливается реально)
         s.connect(('8.8.8.8', 80))
         # Получаем локальный IP-адрес
         local_ip = s.getsockname()[0]
@@ -504,7 +504,7 @@ def get_local_ip():
 @app.route('/get_mobile_url')
 def get_mobile_url():
     ip = get_local_ip()
-    port = 5000  
+    port = 5000  # Порт Flask по умолчанию
     url = f"http://{ip}:{port}"
     return jsonify({"url": url})
 
@@ -515,4 +515,4 @@ if __name__ == '__main__':
     
     # Запускаем сервер
     app.run(host='0.0.0.0', port=5000, debug=True)
-    
+    # socketio.run(app, host='0.0.0.0', port=5000, debug=True, allow_unsafe_werkzeug=True)
