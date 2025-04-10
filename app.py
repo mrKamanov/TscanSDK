@@ -1,6 +1,45 @@
+"""
+Сканер тестов - Основной файл приложения
+=======================================
+
+Это главный файл приложения для сканирования и проверки тестов. Приложение позволяет:
+1. Сканировать тесты через веб-камеру в реальном времени
+2. Обрабатывать пакеты тестов (загруженные фотографии)
+3. Проверять тесты с множественным выбором
+4. Создавать и просматривать отчеты
+
+Основные компоненты:
+- Flask сервер для веб-интерфейса
+- OpenCV для обработки изображений
+- WebSocket для передачи видеопотока
+- Многопоточная обработка для бесперебойной работы камеры
+
+Структура приложения:
+- Главное меню (/) - выбор режима работы
+- Сканирование (/scan) - проверка тестов через камеру
+- Пакетная обработка (/batch) - загрузка фотографий
+- Множественный выбор (/multiple) - тесты с несколькими ответами
+- Отчеты (/reports) - просмотр результатов
+- Конструктор (/constructor) - создание бланков
+- Инструкция (/instructions) - руководство пользователя
+
+Настройки по умолчанию:
+- Разрешение камеры: 1280x720
+- Частота кадров: 30 FPS
+- Размер обработанного изображения: 700px
+- Поддержка до 50 вопросов
+- Поддержка до 10 вариантов ответа
+
+Система оценивания:
+- 5: 90-100%
+- 4: 70-89%
+- 3: 50-69%
+- 2: 0-49%
+"""
+
 from flask import Flask, render_template, request, jsonify, send_file
 from flask_socketio import SocketIO, emit
-from flask_cors import CORS  # Добавляем поддержку CORS
+from flask_cors import CORS
 import cv2
 import base64
 import threading
@@ -13,15 +52,13 @@ import os
 import socket
 
 app = Flask(__name__)
-CORS(app)  # Включаем CORS для всех маршрутов
+CORS(app)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")  # Разрешаем все источники для Socket.IO
+socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
 
-# Инициализация процессоров
 multiple_processor = MultipleProcessor()
 multiple_columns_processor = MultipleColumnsProcessor()
 
-# Значения по умолчанию
 questions = 1
 choices = 1
 correct_answers = [1]
@@ -35,7 +72,7 @@ grading_criteria = {
     3: [50, 69],
     2: [0, 49]
 }
-# Значения по умолчанию для параметров обработки изображения
+
 brightness = 0
 contrast = 1
 saturation = 1
@@ -46,30 +83,26 @@ is_paused = False
 original_paused_frame = None
 paused_frame = None
 paused_result = None
-overlay_mode = False  
+overlay_mode = False
 camera_thread = None
 
 def start_camera():
     global cap, camera_thread
     try:
         if cap is None:
-            cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)  
+            cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
             if not cap.isOpened():
                 print("Ошибка: Камера не найдена")
                 return False
             
-            # Базовые настройки камеры
             cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
             cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
             cap.set(cv2.CAP_PROP_FPS, 30)
-            
-            # Настройки цвета и качества
             cap.set(cv2.CAP_PROP_BRIGHTNESS, 128)
             cap.set(cv2.CAP_PROP_CONTRAST, 128)
             cap.set(cv2.CAP_PROP_SATURATION, 128)
             cap.set(cv2.CAP_PROP_AUTO_WB, 1)
             
-            # Запускаем поток для чтения кадров
             camera_thread = threading.Thread(target=process_camera_frames)
             camera_thread.daemon = True
             camera_thread.start()
@@ -93,17 +126,17 @@ def process_camera_frames():
                     print("Ошибка чтения кадра")
                     continue
                 
-                # Обработка кадра
+                
                 processed_frame, correct_count, score, incorrect_questions, grading = process_video_frame(
                     frame, questions, choices, correct_answers, image_size,
                     overlay_mode, brightness, contrast, saturation, sharpness
                 )
                 
-                # Конвертация в JPEG
+                
                 _, buffer = cv2.imencode('.jpg', processed_frame)
                 image_base64 = base64.b64encode(buffer).decode('utf-8')
                 
-                # Отправка кадра клиенту
+                
                 socketio.emit('frame', {
                     'image': image_base64,
                     'result': f"{correct_count}/{questions} ({score:.1f}%)"
@@ -156,14 +189,14 @@ def process_multiple():
         choices = int(request.form['choices'])
         correct_answers = json.loads(request.form['correctAnswers'])
 
-        # Чтение и обработка изображения
+        
         img_array = np.frombuffer(image.read(), np.uint8)
         img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
 
-        # Обработка изображения и распознавание ответов
+        
         processed_frame, detected_answers = process_multiple_choice(img, questions, choices)
 
-        # Подсчет правильных ответов
+        
         correct_count = 0
         total_questions = len(correct_answers)
         incorrect_questions = []
@@ -180,7 +213,7 @@ def process_multiple():
 
         score = (correct_count / total_questions) * 100
 
-        # Формирование результата
+        
         result = {
             'success': True,
             'workNumber': len(report_list) + 1,
@@ -249,12 +282,12 @@ def handle_apply_settings(data):
         new_questions = int(data.get('questions', 0))
         new_choices = int(data.get('choices', 0))
 
-        # Проверяем, что значения больше или равны 1
+        
         if new_questions < 1 or new_choices < 1:
             emit('error', {'message': 'Количество вопросов и вариантов ответов должно быть не менее 1.'})
             return
 
-        # Применяем новые настройки
+        
         questions = new_questions
         choices = new_choices
         correct_answers = [0] * questions  
@@ -293,7 +326,7 @@ def handle_add_to_report(data):
         report = {}
         
         if isinstance(data, dict) and 'result' in data:
-            # Данные из режима сканирования
+            
             result_str = data['result']
             correct_count = int(result_str.split('/')[0])
             total_questions = int(result_str.split('/')[1].split(',')[0])
@@ -309,7 +342,7 @@ def handle_add_to_report(data):
                 'incorrect_question_numbers': [q['question_number'] for q in last_incorrect_questions]
             }
         else:
-            # Данные из пакетной обработки или множественного выбора
+            
             report = {
                 'work_number': len(report_list) + 1,
                 'correct_answers_count': data['correct_count'],
@@ -320,7 +353,7 @@ def handle_add_to_report(data):
                 'incorrect_question_numbers': [q['question_number'] for q in data['incorrect_questions']]
             }
         
-        # Определяем оценку
+        
         score = report['score_percentage']
         grade = 2 
         
@@ -411,26 +444,26 @@ def handle_update_camera_settings(data):
 @socketio.on('process_batch_image')
 def handle_batch_image(data):
     try:
-        # Декодируем base64 изображение
+        
         image_data = data['image'].split(',')[1]
         image_bytes = base64.b64decode(image_data)
         nparr = np.frombuffer(image_bytes, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-        # Обработка изображения с включенным режимом наложения
+        
         result_img, correct_count, score, incorrect_questions, grading = process_video_frame(
             img, data['questions'], data['choices'], data['correctAnswers'],
-            image_size=800, overlay_mode=True  # Включаем режим наложения
+            image_size=800, overlay_mode=True  
         )
 
-        # Конвертируем результат обратно в base64
+        
         _, buffer = cv2.imencode('.jpg', result_img)
         result_image_base64 = base64.b64encode(buffer).decode('utf-8')
 
-        # Определяем правильные вопросы на основе grading
+        
         correct_questions = [i + 1 for i, grade in enumerate(grading) if grade == 1]
 
-        # Конвертируем результаты в JSON-сериализуемые типы
+        
         response = {
             'id': data['id'],
             'correct_count': int(correct_count),
@@ -456,13 +489,13 @@ def handle_batch_image(data):
 @socketio.on('process_multiple')
 def handle_multiple_processing(data):
     try:
-        # Декодируем изображение
+        
         image_data = data['image'].split(',')[1]
         image_bytes = base64.b64decode(image_data)
         nparr = np.frombuffer(image_bytes, np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-        # Получаем конфигурацию
+        
         config = {
             'questions': data['questions'],
             'choices': data['choices'],
@@ -471,16 +504,16 @@ def handle_multiple_processing(data):
             'display_mode': data.get('displayMode', 'single')
         }
 
-        # Выбираем процессор в зависимости от режима отображения
+        
         if config['display_mode'] == 'double':
             result = multiple_columns_processor.process_image(image, config)
         else:
             result = multiple_processor.process_image(image, config)
 
-        # Добавляем ID к результату
+        
         result['id'] = data['id']
         
-        # Отправляем результат
+       
         emit('multiple_result', result)
 
     except Exception as e:
@@ -489,12 +522,9 @@ def handle_multiple_processing(data):
 
 def get_local_ip():
     try:
-        # Создаем временный сокет для определения основного сетевого интерфейса
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        # Подключаемся к публичному DNS-серверу Google (это соединение не устанавливается реально)
-        s.connect(('8.8.8.8', 80))
-        # Получаем локальный IP-адрес
-        local_ip = s.getsockname()[0]
+        s.connect(('8.8.8.8', 80))  
+        local_ip = s.getsockname()[0]  
         s.close()
         return local_ip
     except Exception as e:
@@ -504,15 +534,12 @@ def get_local_ip():
 @app.route('/get_mobile_url')
 def get_mobile_url():
     ip = get_local_ip()
-    port = 5000  # Порт Flask по умолчанию
+    port = 5000  
     url = f"http://{ip}:{port}"
     return jsonify({"url": url})
 
 if __name__ == '__main__':
-    # Получаем IP-адрес
     ip = get_local_ip()
     print(f"Server running at http://{ip}:5000")
-    
-    # Запускаем сервер
-    app.run(host='0.0.0.0', port=5000, debug=True)
-    # socketio.run(app, host='0.0.0.0', port=5000, debug=True, allow_unsafe_werkzeug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True, allow_unsafe_werkzeug=True)
+ 
